@@ -2,9 +2,8 @@
 
 🚀 一个基于 Golang + SQLite3 的 RESTful API 服务，支持 Multisig / Vault / Member 三个资源的完整 CRUD 操作，支持分页、搜索、过滤、排序，并提供子资源查询。
 
----
 
-目录
+## 目录
 
 - 数据库表结构 (SQLite3 Schema)
 - 功能特性
@@ -20,10 +19,9 @@
 - 错误响应格式
 - License
 
----
-
 ## 数据库表结构 (SQLite3 Schema)
 
+```
 -- Multisig 表
 CREATE TABLE multisig (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -54,8 +52,7 @@ CREATE TABLE member (
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (multisig_address) REFERENCES multisig(multisig_address)
 );
-
----
+```
 
 ## 功能特性
 
@@ -69,20 +66,20 @@ CREATE TABLE member (
 
 ## 快速开始
 
-### 克隆项目
+```
+# 克隆项目
 git clone https://github.com/yourname/squads-rest-api.git
 cd squads-rest-api
 
-### 构建
+# 构建
 make build
 
-### 运行
-./bin/squads-rest-api
+# 运行
+./squads-rest-api
 
-### 服务默认运行在：
+# 服务默认运行在：
 http://localhost:8080
-
----
+```
 
 ## 健康检查
 
@@ -92,8 +89,6 @@ curl -s http://localhost:8080/health | jq
 {
   "status": "ok"
 }
-
----
 
 ## 通用查询参数说明
 
@@ -105,10 +100,10 @@ search      | string | 模糊搜索，作用于部分字段（如 name、descrip
 sort        | string | 排序字段和顺序，格式：字段:asc 或 字段:desc   | ?sort=created_at:desc
 组合查询     | -      | 参数可组合使用                                | ?page=1&page_size=5&search=test&sort=updated_at:asc
 
----
 
 ## API 文档
 
+```
 Multisigs
 
 创建
@@ -179,11 +174,11 @@ curl -s http://localhost:8080/multisigs/1/vaults | jq
 
 获取某个 Multisig 下的 Members
 curl -s http://localhost:8080/multisigs/1/members | jq
-
----
+```
 
 ## 示例响应 JSON
 
+```
 Multisigs 列表（带分页信息）
 {
   "page": 1,
@@ -250,14 +245,11 @@ Members 列表（带分页信息）
   ]
 }
 
----
-
 错误响应格式
 {
   "error": "not found"
 }
-
----
+```
 
 ## License
 
