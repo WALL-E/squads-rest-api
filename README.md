@@ -82,12 +82,14 @@ http://localhost:8080
 
 ## 健康检查
 
+```
 curl -s http://localhost:8080/health | jq
 
 响应：
 {
   "status": "ok"
 }
+```
 
 ## 通用查询参数说明
 
