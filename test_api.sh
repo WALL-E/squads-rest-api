@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-API="http://localhost:8080"
+API="http://localhost:8090"
 
 echo "🚀 开始测试 Squads REST API"
 
