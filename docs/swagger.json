@@ -1,0 +1,836 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "contact": {}
+    },
+    "paths": {
+        "/multisigs": {
+            "get": {
+                "description": "Get multisigs list with pagination, search, and sort",
+                "tags": [
+                    "Multisigs"
+                ],
+                "summary": "List Multisigs",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Page number",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page size",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Search keyword",
+                        "name": "search",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Sort field and order, e.g., 'id desc'",
+                        "name": "sort",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main.Response"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a new multisig",
+                "tags": [
+                    "Multisigs"
+                ],
+                "summary": "Create Multisig",
+                "parameters": [
+                    {
+                        "description": "Multisig object",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/main.Multisig"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/main.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/multisigs/{multisig_address}": {
+            "get": {
+                "description": "Get a single multisig by address",
+                "tags": [
+                    "Multisigs"
+                ],
+                "summary": "Get Multisig",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Multisig Address",
+                        "name": "multisig_address",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main.Response"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update an existing multisig by address",
+                "tags": [
+                    "Multisigs"
+                ],
+                "summary": "Update Multisig",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Multisig Address",
+                        "name": "multisig_address",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Updated multisig object",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/main.Multisig"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main.Response"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete a multisig and all its related Vaults, Members, and Spends",
+                "tags": [
+                    "Multisigs"
+                ],
+                "summary": "Delete Multisig",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Multisig Address",
+                        "name": "multisig_address",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/multisigs/{multisig_address}/members": {
+            "get": {
+                "description": "Get members list of a multisig with pagination, search, sort",
+                "tags": [
+                    "Members"
+                ],
+                "summary": "List Members",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Multisig Address",
+                        "name": "multisig_address",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page number",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page size",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Search keyword",
+                        "name": "search",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Sort field and order, e.g., 'id desc'",
+                        "name": "sort",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main.Response"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a new member under a multisig",
+                "tags": [
+                    "Members"
+                ],
+                "summary": "Create Member",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Multisig Address",
+                        "name": "multisig_address",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Member object",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/main.Member"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/main.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/multisigs/{multisig_address}/members/{member_id}": {
+            "get": {
+                "description": "Get a single member by ID",
+                "tags": [
+                    "Members"
+                ],
+                "summary": "Get Member",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Multisig Address",
+                        "name": "multisig_address",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Member ID",
+                        "name": "member_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main.Response"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update a member",
+                "tags": [
+                    "Members"
+                ],
+                "summary": "Update Member",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Multisig Address",
+                        "name": "multisig_address",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Member ID",
+                        "name": "member_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Updated member object",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/main.Member"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main.Response"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete a member",
+                "tags": [
+                    "Members"
+                ],
+                "summary": "Delete Member",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Multisig Address",
+                        "name": "multisig_address",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Member ID",
+                        "name": "member_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/multisigs/{multisig_address}/spends": {
+            "get": {
+                "description": "Get spends list of a multisig with pagination, search, sort",
+                "tags": [
+                    "Spends"
+                ],
+                "summary": "List Spends",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Multisig Address",
+                        "name": "multisig_address",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page number",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page size",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Search keyword",
+                        "name": "search",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Sort field and order, e.g., 'id desc'",
+                        "name": "sort",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main.Response"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a new spend under a multisig",
+                "tags": [
+                    "Spends"
+                ],
+                "summary": "Create Spend",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Multisig Address",
+                        "name": "multisig_address",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Spend object",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/main.Spend"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/main.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/multisigs/{multisig_address}/spends/{spend_id}": {
+            "get": {
+                "description": "Get a single spend by ID",
+                "tags": [
+                    "Spends"
+                ],
+                "summary": "Get Spend",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Multisig Address",
+                        "name": "multisig_address",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Spend ID",
+                        "name": "spend_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main.Response"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update a spend",
+                "tags": [
+                    "Spends"
+                ],
+                "summary": "Update Spend",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Multisig Address",
+                        "name": "multisig_address",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Spend ID",
+                        "name": "spend_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Updated spend object",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/main.Spend"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main.Response"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete a spend",
+                "tags": [
+                    "Spends"
+                ],
+                "summary": "Delete Spend",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Multisig Address",
+                        "name": "multisig_address",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Spend ID",
+                        "name": "spend_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/multisigs/{multisig_address}/vaults": {
+            "get": {
+                "description": "Get vaults list of a multisig with pagination, search, sort",
+                "tags": [
+                    "Vaults"
+                ],
+                "summary": "List Vaults",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Multisig Address",
+                        "name": "multisig_address",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page number",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page size",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Search keyword",
+                        "name": "search",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Sort field and order, e.g., 'id desc'",
+                        "name": "sort",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main.Response"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a new vault under a multisig",
+                "tags": [
+                    "Vaults"
+                ],
+                "summary": "Create Vault",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Multisig Address",
+                        "name": "multisig_address",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Vault object",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/main.Vault"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/main.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/multisigs/{multisig_address}/vaults/{vault_id}": {
+            "get": {
+                "description": "Get a single vault by ID",
+                "tags": [
+                    "Vaults"
+                ],
+                "summary": "Get Vault",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Multisig Address",
+                        "name": "multisig_address",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Vault ID",
+                        "name": "vault_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main.Response"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update a vault",
+                "tags": [
+                    "Vaults"
+                ],
+                "summary": "Update Vault",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Multisig Address",
+                        "name": "multisig_address",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Vault ID",
+                        "name": "vault_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Updated vault object",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/main.Vault"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main.Response"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete a vault",
+                "tags": [
+                    "Vaults"
+                ],
+                "summary": "Delete Vault",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Multisig Address",
+                        "name": "multisig_address",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Vault ID",
+                        "name": "vault_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/main.Response"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "main.Member": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "member_address": {
+                    "type": "string"
+                },
+                "multisig_address": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "main.Multisig": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "multisig_address": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "main.Response": {
+            "type": "object",
+            "properties": {
+                "data": {},
+                "message": {
+                    "type": "string"
+                },
+                "success": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "main.Spend": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "multisig_address": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "spend_address": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "main.Vault": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "multisig_address": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "vault_address": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

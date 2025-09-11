@@ -1,0 +1,554 @@
+definitions:
+  main.Member:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      member_address:
+        type: string
+      multisig_address:
+        type: string
+      name:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  main.Multisig:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      multisig_address:
+        type: string
+      name:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  main.Response:
+    properties:
+      data: {}
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+  main.Spend:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      multisig_address:
+        type: string
+      name:
+        type: string
+      spend_address:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  main.Vault:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      multisig_address:
+        type: string
+      name:
+        type: string
+      updated_at:
+        type: string
+      vault_address:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /multisigs:
+    get:
+      description: Get multisigs list with pagination, search, and sort
+      parameters:
+      - description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Page size
+        in: query
+        name: limit
+        type: integer
+      - description: Search keyword
+        in: query
+        name: search
+        type: string
+      - description: Sort field and order, e.g., 'id desc'
+        in: query
+        name: sort
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.Response'
+      summary: List Multisigs
+      tags:
+      - Multisigs
+    post:
+      description: Create a new multisig
+      parameters:
+      - description: Multisig object
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/main.Multisig'
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/main.Response'
+      summary: Create Multisig
+      tags:
+      - Multisigs
+  /multisigs/{multisig_address}:
+    delete:
+      description: Delete a multisig and all its related Vaults, Members, and Spends
+      parameters:
+      - description: Multisig Address
+        in: path
+        name: multisig_address
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.Response'
+      summary: Delete Multisig
+      tags:
+      - Multisigs
+    get:
+      description: Get a single multisig by address
+      parameters:
+      - description: Multisig Address
+        in: path
+        name: multisig_address
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.Response'
+      summary: Get Multisig
+      tags:
+      - Multisigs
+    put:
+      description: Update an existing multisig by address
+      parameters:
+      - description: Multisig Address
+        in: path
+        name: multisig_address
+        required: true
+        type: string
+      - description: Updated multisig object
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/main.Multisig'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.Response'
+      summary: Update Multisig
+      tags:
+      - Multisigs
+  /multisigs/{multisig_address}/members:
+    get:
+      description: Get members list of a multisig with pagination, search, sort
+      parameters:
+      - description: Multisig Address
+        in: path
+        name: multisig_address
+        required: true
+        type: string
+      - description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Page size
+        in: query
+        name: limit
+        type: integer
+      - description: Search keyword
+        in: query
+        name: search
+        type: string
+      - description: Sort field and order, e.g., 'id desc'
+        in: query
+        name: sort
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.Response'
+      summary: List Members
+      tags:
+      - Members
+    post:
+      description: Create a new member under a multisig
+      parameters:
+      - description: Multisig Address
+        in: path
+        name: multisig_address
+        required: true
+        type: string
+      - description: Member object
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/main.Member'
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/main.Response'
+      summary: Create Member
+      tags:
+      - Members
+  /multisigs/{multisig_address}/members/{member_id}:
+    delete:
+      description: Delete a member
+      parameters:
+      - description: Multisig Address
+        in: path
+        name: multisig_address
+        required: true
+        type: string
+      - description: Member ID
+        in: path
+        name: member_id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.Response'
+      summary: Delete Member
+      tags:
+      - Members
+    get:
+      description: Get a single member by ID
+      parameters:
+      - description: Multisig Address
+        in: path
+        name: multisig_address
+        required: true
+        type: string
+      - description: Member ID
+        in: path
+        name: member_id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.Response'
+      summary: Get Member
+      tags:
+      - Members
+    put:
+      description: Update a member
+      parameters:
+      - description: Multisig Address
+        in: path
+        name: multisig_address
+        required: true
+        type: string
+      - description: Member ID
+        in: path
+        name: member_id
+        required: true
+        type: integer
+      - description: Updated member object
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/main.Member'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.Response'
+      summary: Update Member
+      tags:
+      - Members
+  /multisigs/{multisig_address}/spends:
+    get:
+      description: Get spends list of a multisig with pagination, search, sort
+      parameters:
+      - description: Multisig Address
+        in: path
+        name: multisig_address
+        required: true
+        type: string
+      - description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Page size
+        in: query
+        name: limit
+        type: integer
+      - description: Search keyword
+        in: query
+        name: search
+        type: string
+      - description: Sort field and order, e.g., 'id desc'
+        in: query
+        name: sort
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.Response'
+      summary: List Spends
+      tags:
+      - Spends
+    post:
+      description: Create a new spend under a multisig
+      parameters:
+      - description: Multisig Address
+        in: path
+        name: multisig_address
+        required: true
+        type: string
+      - description: Spend object
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/main.Spend'
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/main.Response'
+      summary: Create Spend
+      tags:
+      - Spends
+  /multisigs/{multisig_address}/spends/{spend_id}:
+    delete:
+      description: Delete a spend
+      parameters:
+      - description: Multisig Address
+        in: path
+        name: multisig_address
+        required: true
+        type: string
+      - description: Spend ID
+        in: path
+        name: spend_id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.Response'
+      summary: Delete Spend
+      tags:
+      - Spends
+    get:
+      description: Get a single spend by ID
+      parameters:
+      - description: Multisig Address
+        in: path
+        name: multisig_address
+        required: true
+        type: string
+      - description: Spend ID
+        in: path
+        name: spend_id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.Response'
+      summary: Get Spend
+      tags:
+      - Spends
+    put:
+      description: Update a spend
+      parameters:
+      - description: Multisig Address
+        in: path
+        name: multisig_address
+        required: true
+        type: string
+      - description: Spend ID
+        in: path
+        name: spend_id
+        required: true
+        type: integer
+      - description: Updated spend object
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/main.Spend'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.Response'
+      summary: Update Spend
+      tags:
+      - Spends
+  /multisigs/{multisig_address}/vaults:
+    get:
+      description: Get vaults list of a multisig with pagination, search, sort
+      parameters:
+      - description: Multisig Address
+        in: path
+        name: multisig_address
+        required: true
+        type: string
+      - description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Page size
+        in: query
+        name: limit
+        type: integer
+      - description: Search keyword
+        in: query
+        name: search
+        type: string
+      - description: Sort field and order, e.g., 'id desc'
+        in: query
+        name: sort
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.Response'
+      summary: List Vaults
+      tags:
+      - Vaults
+    post:
+      description: Create a new vault under a multisig
+      parameters:
+      - description: Multisig Address
+        in: path
+        name: multisig_address
+        required: true
+        type: string
+      - description: Vault object
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/main.Vault'
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/main.Response'
+      summary: Create Vault
+      tags:
+      - Vaults
+  /multisigs/{multisig_address}/vaults/{vault_id}:
+    delete:
+      description: Delete a vault
+      parameters:
+      - description: Multisig Address
+        in: path
+        name: multisig_address
+        required: true
+        type: string
+      - description: Vault ID
+        in: path
+        name: vault_id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.Response'
+      summary: Delete Vault
+      tags:
+      - Vaults
+    get:
+      description: Get a single vault by ID
+      parameters:
+      - description: Multisig Address
+        in: path
+        name: multisig_address
+        required: true
+        type: string
+      - description: Vault ID
+        in: path
+        name: vault_id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.Response'
+      summary: Get Vault
+      tags:
+      - Vaults
+    put:
+      description: Update a vault
+      parameters:
+      - description: Multisig Address
+        in: path
+        name: multisig_address
+        required: true
+        type: string
+      - description: Vault ID
+        in: path
+        name: vault_id
+        required: true
+        type: integer
+      - description: Updated vault object
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/main.Vault'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.Response'
+      summary: Update Vault
+      tags:
+      - Vaults
+swagger: "2.0"

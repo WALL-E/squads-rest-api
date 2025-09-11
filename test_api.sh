@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #!/usr/bin/env bash
 set -euo pipefail
 
@@ -101,3 +102,90 @@ echo -e "\n===> 查询所有 Members"
 curl -s ${API}/members | jq .
 
 echo -e "\n✅ 所有测试完成"
+=======
+#!/bin/bash
+
+set -xe
+
+API="http://localhost:8090"
+
+echo "===== 删除 Spend ====="
+SPENDS=$(curl -s "$API/multisigs/multisig_1/spends?limit=100" | jq -r '.data.items[].id')
+for id in $SPENDS; do
+  curl -s -X DELETE "$API/multisigs/multisig_1/spends/$id" | jq
+done
+
+echo "===== 删除 Member ====="
+MEMBERS=$(curl -s "$API/multisigs/multisig_1/members?limit=100" | jq -r '.data.items[].id')
+for id in $MEMBERS; do
+  curl -s -X DELETE "$API/multisigs/multisig_1/members/$id" | jq
+done
+
+echo "===== 删除 Vault ====="
+VAULTS=$(curl -s "$API/multisigs/multisig_1/vaults?limit=100" | jq -r '.data.items[].id')
+for id in $VAULTS; do
+  curl -s -X DELETE "$API/multisigs/multisig_1/vaults/$id" | jq
+done
+
+echo "===== 删除 Multisig ====="
+MULTISIGS=$(curl -s "$API/multisigs?limit=100" | jq -r '.data.items[].multisig_address')
+for addr in $MULTISIGS; do
+  curl -s -X DELETE "$API/multisigs/$addr" | jq
+done
+
+echo "===== 数据清理完成 ====="
+
+
+echo "===== 创建 Multisig 测试数据 ====="
+for i in {1..15}; do
+  curl -s -X POST "$API/multisigs" \
+    -H "Content-Type: application/json" \
+    -d "{\"multisig_address\":\"multisig_$i\",\"name\":\"Multisig $i\",\"description\":\"Test multisig $i\"}" \
+    | jq
+done
+
+echo "===== 创建 Vault 测试数据 ====="
+for i in {1..5}; do
+  curl -s -X POST "$API/multisigs/multisig_1/vaults" \
+    -H "Content-Type: application/json" \
+    -d "{\"vault_address\":\"vault_$i\",\"name\":\"Vault $i\",\"description\":\"Test vault $i\"}" \
+    | jq
+done
+
+echo "===== 创建 Member 测试数据 ====="
+for i in {1..5}; do
+  curl -s -X POST "$API/multisigs/multisig_1/members" \
+    -H "Content-Type: application/json" \
+    -d "{\"member_address\":\"member_$i\",\"name\":\"Member $i\",\"description\":\"Test member $i\"}" \
+    | jq
+done
+
+echo "===== 创建 Spend 测试数据 ====="
+for i in {1..5}; do
+  curl -s -X POST "$API/multisigs/multisig_1/spends" \
+    -H "Content-Type: application/json" \
+    -d "{\"spend_address\":\"spend_$i\",\"name\":\"Spend $i\",\"description\":\"Test spend $i\"}" \
+    | jq
+done
+
+echo "===== 分页查询 Multisig (page=1, limit=5) ====="
+curl -s "$API/multisigs?page=1&limit=5" | jq
+
+echo "===== 分页查询 Multisig (page=2, limit=5) ====="
+curl -s "$API/multisigs?page=2&limit=5" | jq
+
+echo "===== 搜索 Multisig name 包含 '1' ====="
+curl -s "$API/multisigs?search=1" | jq
+
+echo "===== 排序 Multisig 按 name asc ====="
+curl -s "$API/multisigs?sort=name%20asc&page=1&limit=5" | jq
+
+echo "===== 分页 + 搜索 + 排序 Vault (page=1, limit=3, search='Vault', sort=name desc) ====="
+curl -s "$API/multisigs/multisig_1/vaults?page=1&limit=3&search=Vault&sort=name%20desc" | jq
+
+echo "===== 分页 + 搜索 + 排序 Member (page=1, limit=2, search='Member', sort=name desc) ====="
+curl -s "$API/multisigs/multisig_1/members?page=1&limit=2&search=Member&sort=name%20desc" | jq
+
+echo "===== 分页 + 搜索 + 排序 Spend (page=1, limit=2, search='Spend', sort=name desc) ====="
+curl -s "$API/multisigs/multisig_1/spends?page=1&limit=2&search=Spend&sort=name%20desc" | jq
+>>>>>>> 10f57b0 (stage)
