@@ -1,57 +1,81 @@
 <html><head><title>API Test Report</title></head><body><h1>API Test Report</h1><table border='1' cellpadding='5'><tr><th>Step</th><th>Method</th><th>URL</th><th>Success</th><th>Response</th></tr><tr><td>Step 1: Create Multisig</td><td>POST</td><td>http://localhost:8090/multisigs</td><td style='color:green'>true</td><td><pre>{
   "success": true,
   "data": {
-    "created_at": "2025-09-12T14:11:25.142+08:00",
+    "created_at": "2025-09-12T14:40:54.644+08:00",
     "description": "testing multisig",
-    "id": 267,
+    "id": 275,
     "multisig_address": "multisig_test_1",
     "name": "Test Multisig",
-    "updated_at": "2025-09-12T14:11:25.142+08:00"
+    "updated_at": "2025-09-12T14:40:54.644+08:00"
   }
 }</pre></td></tr><tr><td>Step 2: Create Vault</td><td>POST</td><td>http://localhost:8090/multisigs/multisig_test_1/vaults</td><td style='color:green'>true</td><td><pre>{
   "success": true,
   "data": {
-    "created_at": "2025-09-12T14:11:25.147+08:00",
+    "created_at": "2025-09-12T14:40:54.648+08:00",
     "description": "vault testing",
-    "id": 107,
+    "id": 108,
     "multisig_address": "multisig_test_1",
     "name": "Test Vault 1",
-    "updated_at": "2025-09-12T14:11:25.147+08:00",
+    "updated_at": "2025-09-12T14:40:54.648+08:00",
     "vault_address": "vault_test_1"
   }
 }</pre></td></tr><tr><td>Step 3: Create Member</td><td>POST</td><td>http://localhost:8090/multisigs/multisig_test_1/members</td><td style='color:green'>true</td><td><pre>{
   "success": true,
   "data": {
-    "created_at": "2025-09-12T14:11:25.15+08:00",
+    "created_at": "2025-09-12T14:40:54.65+08:00",
     "description": "member testing",
-    "id": 107,
+    "id": 108,
     "member_address": "member_test_1",
     "multisig_address": "multisig_test_1",
     "name": "Test Member 1",
-    "updated_at": "2025-09-12T14:11:25.15+08:00"
+    "updated_at": "2025-09-12T14:40:54.65+08:00"
   }
 }</pre></td></tr><tr><td>Step 4: Create Spend</td><td>POST</td><td>http://localhost:8090/multisigs/multisig_test_1/spends</td><td style='color:green'>true</td><td><pre>{
   "success": true,
   "data": {
-    "created_at": "2025-09-12T14:11:25.153+08:00",
+    "created_at": "2025-09-12T14:40:54.652+08:00",
     "description": "spend testing",
-    "id": 110,
+    "id": 112,
     "multisig_address": "multisig_test_1",
     "name": "Test Spend 1",
     "spend_address": "spend_test_1",
-    "updated_at": "2025-09-12T14:11:25.153+08:00"
+    "updated_at": "2025-09-12T14:40:54.652+08:00"
   }
 }</pre></td></tr><tr><td>Step 5: List Multisigs</td><td>GET</td><td>http://localhost:8090/multisigs?sort=name</td><td style='color:green'>true</td><td><pre>{
   "success": true,
   "data": {
     "items": [
       {
-        "created_at": "2025-09-12T14:11:25.142+08:00",
+        "created_at": "2025-09-12T14:40:54.644+08:00",
         "description": "testing multisig",
-        "id": 267,
+        "id": 275,
         "multisig_address": "multisig_test_1",
         "name": "Test Multisig",
-        "updated_at": "2025-09-12T14:11:25.142+08:00"
+        "updated_at": "2025-09-12T14:40:54.644+08:00"
+      },
+      {
+        "created_at": "2025-09-12T14:23:27.76+08:00",
+        "description": "First squad",
+        "id": 274,
+        "multisig_address": "0xabc",
+        "name": "Squad A",
+        "updated_at": "2025-09-12T14:23:27.76+08:00"
+      },
+      {
+        "created_at": "2025-09-12T14:12:38.214+08:00",
+        "description": "Second Squad",
+        "id": 269,
+        "multisig_address": "0xdef456",
+        "name": "Squad B",
+        "updated_at": "2025-09-12T14:12:38.214+08:00"
+      },
+      {
+        "created_at": "2025-09-12T14:12:38.2+08:00",
+        "description": "Updated desc",
+        "id": 268,
+        "multisig_address": "0xabc123",
+        "name": "Squad A Updated",
+        "updated_at": "2025-09-12T14:24:10.191+08:00"
       },
       {
         "created_at": "2025-09-12T13:50:57.547+08:00",
@@ -100,55 +124,31 @@
         "multisig_address": "multisig_10",
         "name": "Multisig 10",
         "updated_at": "2025-09-12T13:50:57.512+08:00"
-      },
-      {
-        "created_at": "2025-09-12T13:50:57.505+08:00",
-        "description": "Test multisig 9",
-        "id": 257,
-        "multisig_address": "multisig_9",
-        "name": "Multisig 9",
-        "updated_at": "2025-09-12T13:50:57.505+08:00"
-      },
-      {
-        "created_at": "2025-09-12T13:50:57.497+08:00",
-        "description": "Test multisig 8",
-        "id": 256,
-        "multisig_address": "multisig_8",
-        "name": "Multisig 8",
-        "updated_at": "2025-09-12T13:50:57.497+08:00"
-      },
-      {
-        "created_at": "2025-09-12T13:50:57.49+08:00",
-        "description": "Test multisig 7",
-        "id": 255,
-        "multisig_address": "multisig_7",
-        "name": "Multisig 7",
-        "updated_at": "2025-09-12T13:50:57.49+08:00"
       }
     ],
-    "total": 16
+    "total": 19
   }
 }</pre></td></tr><tr><td>Step 6: Get Multisig</td><td>GET</td><td>http://localhost:8090/multisigs/multisig_test_1</td><td style='color:green'>true</td><td><pre>{
   "success": true,
   "data": {
-    "created_at": "2025-09-12T14:11:25.142+08:00",
+    "created_at": "2025-09-12T14:40:54.644+08:00",
     "description": "testing multisig",
-    "id": 267,
+    "id": 275,
     "multisig_address": "multisig_test_1",
     "name": "Test Multisig",
-    "updated_at": "2025-09-12T14:11:25.142+08:00"
+    "updated_at": "2025-09-12T14:40:54.644+08:00"
   }
 }</pre></td></tr><tr><td>Step 7: List Vaults</td><td>GET</td><td>http://localhost:8090/multisigs/multisig_test_1/vaults?sort=name+asc</td><td style='color:green'>true</td><td><pre>{
   "success": true,
   "data": {
     "items": [
       {
-        "created_at": "2025-09-12T14:11:25.147+08:00",
+        "created_at": "2025-09-12T14:40:54.648+08:00",
         "description": "vault testing",
-        "id": 107,
+        "id": 108,
         "multisig_address": "multisig_test_1",
         "name": "Test Vault 1",
-        "updated_at": "2025-09-12T14:11:25.147+08:00",
+        "updated_at": "2025-09-12T14:40:54.648+08:00",
         "vault_address": "vault_test_1"
       }
     ],
@@ -159,13 +159,13 @@
   "data": {
     "items": [
       {
-        "created_at": "2025-09-12T14:11:25.15+08:00",
+        "created_at": "2025-09-12T14:40:54.65+08:00",
         "description": "member testing",
-        "id": 107,
+        "id": 108,
         "member_address": "member_test_1",
         "multisig_address": "multisig_test_1",
         "name": "Test Member 1",
-        "updated_at": "2025-09-12T14:11:25.15+08:00"
+        "updated_at": "2025-09-12T14:40:54.65+08:00"
       }
     ],
     "total": 1
@@ -175,22 +175,22 @@
   "data": {
     "items": [
       {
-        "created_at": "2025-09-12T14:11:25.153+08:00",
+        "created_at": "2025-09-12T14:40:54.652+08:00",
         "description": "spend testing",
-        "id": 110,
+        "id": 112,
         "multisig_address": "multisig_test_1",
         "name": "Test Spend 1",
         "spend_address": "spend_test_1",
-        "updated_at": "2025-09-12T14:11:25.153+08:00"
+        "updated_at": "2025-09-12T14:40:54.652+08:00"
       }
     ],
     "total": 1
   }
-}</pre></td></tr><tr><td>Step 10: Delete Spend</td><td>DELETE</td><td>http://localhost:8090/multisigs/multisig_test_1/spends/110</td><td style='color:green'>true</td><td><pre>{
+}</pre></td></tr><tr><td>Step 10: Delete Spend</td><td>DELETE</td><td>http://localhost:8090/multisigs/multisig_test_1/spends/112</td><td style='color:green'>true</td><td><pre>{
   "success": true
-}</pre></td></tr><tr><td>Step 11: Delete Member</td><td>DELETE</td><td>http://localhost:8090/multisigs/multisig_test_1/members/107</td><td style='color:green'>true</td><td><pre>{
+}</pre></td></tr><tr><td>Step 11: Delete Member</td><td>DELETE</td><td>http://localhost:8090/multisigs/multisig_test_1/members/108</td><td style='color:green'>true</td><td><pre>{
   "success": true
-}</pre></td></tr><tr><td>Step 12: Delete Vault</td><td>DELETE</td><td>http://localhost:8090/multisigs/multisig_test_1/vaults/107</td><td style='color:green'>true</td><td><pre>{
+}</pre></td></tr><tr><td>Step 12: Delete Vault</td><td>DELETE</td><td>http://localhost:8090/multisigs/multisig_test_1/vaults/108</td><td style='color:green'>true</td><td><pre>{
   "success": true
 }</pre></td></tr><tr><td>Step 13: Delete Multisig</td><td>DELETE</td><td>http://localhost:8090/multisigs/multisig_test_1</td><td style='color:green'>true</td><td><pre>{
   "success": true

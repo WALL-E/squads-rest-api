@@ -19,7 +19,7 @@ import (
 // ---------- Models ----------
 type Multisig struct {
 	ID              uint      `gorm:"primaryKey" json:"id"`
-	MultisigAddress string    `gorm:"uniqueIndex;not null" json:"multisig_address"`
+	MultisigAddress string    `gorm:"type:varchar(255);uniqueIndex;not null" json:"multisig_address"`
 	Name            string    `json:"name"`
 	Description     string    `json:"description"`
 	CreatedAt       time.Time `gorm:"autoCreateTime" json:"created_at"`
@@ -28,8 +28,8 @@ type Multisig struct {
 
 type Vault struct {
 	ID              uint      `gorm:"primaryKey" json:"id"`
-	VaultAddress    string    `gorm:"uniqueIndex;not null" json:"vault_address"`
-	MultisigAddress string    `gorm:"index;not null" json:"multisig_address"`
+	VaultAddress    string    `gorm:"type:varchar(255);uniqueIndex;not null" json:"vault_address"`
+	MultisigAddress string    `gorm:"type:varchar(255);uniqueIndex;not null" json:"multisig_address"`
 	Name            string    `json:"name"`
 	Description     string    `json:"description"`
 	CreatedAt       time.Time `gorm:"autoCreateTime" json:"created_at"`
@@ -38,8 +38,8 @@ type Vault struct {
 
 type Member struct {
 	ID              uint      `gorm:"primaryKey" json:"id"`
-	MemberAddress   string    `gorm:"uniqueIndex;not null" json:"member_address"`
-	MultisigAddress string    `gorm:"index;not null" json:"multisig_address"`
+	MemberAddress   string    `gorm:"type:varchar(255);uniqueIndex;not null" json:"member_address"`
+	MultisigAddress string    `gorm:"type:varchar(255);uniqueIndex;not null" json:"multisig_address"`
 	Name            string    `json:"name"`
 	Description     string    `json:"description"`
 	CreatedAt       time.Time `gorm:"autoCreateTime" json:"created_at"`
@@ -48,8 +48,8 @@ type Member struct {
 
 type Spend struct {
 	ID              uint      `gorm:"primaryKey" json:"id"`
-	SpendAddress    string    `gorm:"uniqueIndex;not null" json:"spend_address"`
-	MultisigAddress string    `gorm:"index;not null" json:"multisig_address"`
+	SpendAddress    string    `gorm:"type:varchar(255);uniqueIndex;not null" json:"spend_address"`
+	MultisigAddress string    `gorm:"type:varchar(255);uniqueIndex;not null" json:"multisig_address"`
 	Name            string    `json:"name"`
 	Description     string    `json:"description"`
 	CreatedAt       time.Time `gorm:"autoCreateTime" json:"created_at"`
