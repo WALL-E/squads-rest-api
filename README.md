@@ -81,11 +81,12 @@ http://localhost:8080
 ## 健康检查
 
 ```
-curl -s http://localhost:8080/health | jq
+curl -s http://localhost:8090/health | jq
 
 响应：
 {
-  "status": "ok"
+  "success": true,
+  "message": "ok"
 }
 ```
 

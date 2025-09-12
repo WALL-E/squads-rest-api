@@ -628,6 +628,11 @@ func main() {
 
 	v1 := r.Group("/")
 	{
+		// Health Check
+		v1.GET("/health", func(c *gin.Context) {
+			c.JSON(http.StatusOK, Response{Success: true, Message: "ok"})
+		})
+
 		// Multisigs
 		v1.GET("/multisigs", listMultisigs)
 		v1.GET("/multisigs/:multisig_address", getMultisig)
