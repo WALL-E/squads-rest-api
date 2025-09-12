@@ -1,52 +1,64 @@
 # squads-rest-api
 
-🚀 一个基于 Golang + SQLite3 的 RESTful API 服务，支持 Multisig / Vault / Member / Spend 四个资源的完整 CRUD 操作，支持分页、搜索、过滤、排序。
+🚀 一个基于 Golang + MySQL 的 RESTful API 服务，支持 Multisig / Vault / Member / Spend 四个资源的完整 CRUD 操作，支持分页、搜索、过滤、排序。
 
 
-## 数据库表结构 (SQLite3 Schema)
-
+## 数据库表结构 (MySQL Schema)
 ```
--- Multisig 表
-CREATE TABLE multisig (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    multisig_address TEXT NOT NULL UNIQUE,
-    name TEXT,
-    description TEXT,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-);
+-- ---------- Multisigs ----------
+CREATE TABLE IF NOT EXISTS `multisigs` (
+  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `multisig_address` VARCHAR(255) NOT NULL,
+  `name` VARCHAR(255),
+  `description` TEXT,
+  `created_at` DATETIME(3) DEFAULT CURRENT_TIMESTAMP(3),
+  `updated_at` DATETIME(3) DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `idx_multisigs_multisig_address` (`multisig_address`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Vault 表
-CREATE TABLE vault (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    vault_address TEXT NOT NULL UNIQUE,
-    multisig_address TEXT NOT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (multisig_address) REFERENCES multisig(multisig_address)
-);
+-- ---------- Vaults ----------
+CREATE TABLE IF NOT EXISTS `vaults` (
+  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `vault_address` VARCHAR(255) NOT NULL,
+  `multisig_address` VARCHAR(255) NOT NULL,
+  `name` VARCHAR(255),
+  `description` TEXT,
+  `created_at` DATETIME(3) DEFAULT CURRENT_TIMESTAMP(3),
+  `updated_at` DATETIME(3) DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `idx_vaults_vault_address` (`vault_address`),
+  KEY `idx_vaults_multisig_address` (`multisig_address`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Member 表
-CREATE TABLE member (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    member_address TEXT NOT NULL UNIQUE,
-    name TEXT,
-    multisig_address TEXT NOT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (multisig_address) REFERENCES multisig(multisig_address)
-);
+-- ---------- Members ----------
+CREATE TABLE IF NOT EXISTS `members` (
+  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `member_address` VARCHAR(255) NOT NULL,
+  `multisig_address` VARCHAR(255) NOT NULL,
+  `name` VARCHAR(255),
+  `description` TEXT,
+  `created_at` DATETIME(3) DEFAULT CURRENT_TIMESTAMP(3),
+  `updated_at` DATETIME(3) DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `idx_members_member_address` (`member_address`),
+  KEY `idx_members_multisig_address` (`multisig_address`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Member 表
-CREATE TABLE spend (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    spend_address TEXT NOT NULL UNIQUE,
-    name TEXT,
-    multisig_address TEXT NOT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (multisig_address) REFERENCES multisig(multisig_address)
-);
+-- ---------- Spends ----------
+CREATE TABLE IF NOT EXISTS `spends` (
+  `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `spend_address` VARCHAR(255) NOT NULL,
+  `multisig_address` VARCHAR(255) NOT NULL,
+  `name` VARCHAR(255),
+  `description` TEXT,
+  `created_at` DATETIME(3) DEFAULT CURRENT_TIMESTAMP(3),
+  `updated_at` DATETIME(3) DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `idx_spends_spend_address` (`spend_address`),
+  KEY `idx_spends_multisig_address` (`multisig_address`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 ```
 
 ## 功能特性
