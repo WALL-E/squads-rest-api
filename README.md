@@ -28,9 +28,8 @@ curl -s http://localhost:8090/health | jq
 
 ## API 文档
 
-```
 Multisigs
-
+```
 创建
 curl -s -X POST http://localhost:8090/multisigs \
   -H "Content-Type: application/json" \
@@ -49,9 +48,10 @@ curl -s -X PUT http://localhost:8090/multisigs/0xabc123 \
 
 删除
 curl -s -X DELETE http://localhost:8090/multisigs/0xabc123 | jq
+```
 
 Spends
-
+```
 创建
 curl -s -X POST http://localhost:8090/multisigs/0xabc123/spends \
   -H "Content-Type: application/json" \
