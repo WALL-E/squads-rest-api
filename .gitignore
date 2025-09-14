@@ -43,6 +43,7 @@ logs/
 *.sqlite3
 app.db
 squads.db
+report.html
 
 # Build artifacts
 server
