@@ -93,9 +93,9 @@ func main() {
 	}
 	resp = httpRequest("POST", fmt.Sprintf("%s/multisigs/%s/vaults", baseURL, multisigID), v1)
 	printStep(step, resp, "POST", fmt.Sprintf("%s/multisigs/%s/vaults", baseURL, multisigID))
-	vaultID := 0
+	vaultAddress := ""
 	if resp.Success {
-		vaultID = int(resp.Data.(map[string]interface{})["id"].(float64))
+		vaultAddress = v1["vault_address"].(string)
 	}
 
 	// Step 3: Create Member
@@ -107,9 +107,9 @@ func main() {
 	}
 	resp = httpRequest("POST", fmt.Sprintf("%s/multisigs/%s/members", baseURL, multisigID), mem1)
 	printStep(step, resp, "POST", fmt.Sprintf("%s/multisigs/%s/members", baseURL, multisigID))
-	memberID := 0
+	memberAddress := ""
 	if resp.Success {
-		memberID = int(resp.Data.(map[string]interface{})["id"].(float64))
+		memberAddress = mem1["member_address"].(string)
 	}
 
 	// Step 4: Create Spend
@@ -121,9 +121,9 @@ func main() {
 	}
 	resp = httpRequest("POST", fmt.Sprintf("%s/multisigs/%s/spends", baseURL, multisigID), sp1)
 	printStep(step, resp, "POST", fmt.Sprintf("%s/multisigs/%s/spends", baseURL, multisigID))
-	spendID := 0
+	spendAddress := ""
 	if resp.Success {
-		spendID = int(resp.Data.(map[string]interface{})["id"].(float64))
+		spendAddress = sp1["spend_address"].(string)
 	}
 
 	// Step 5: List Multisigs
@@ -153,18 +153,18 @@ func main() {
 
 	// Step 10: Delete Spend
 	step = "Step 10: Delete Spend"
-	resp = httpRequest("DELETE", fmt.Sprintf("%s/multisigs/%s/spends/%d", baseURL, multisigID, spendID), nil)
-	printStep(step, resp, "DELETE", fmt.Sprintf("%s/multisigs/%s/spends/%d", baseURL, multisigID, spendID))
+	resp = httpRequest("DELETE", fmt.Sprintf("%s/multisigs/%s/spends/%s", baseURL, multisigID, spendAddress), nil)
+	printStep(step, resp, "DELETE", fmt.Sprintf("%s/multisigs/%s/spends/%s", baseURL, multisigID, spendAddress))
 
 	// Step 11: Delete Member
 	step = "Step 11: Delete Member"
-	resp = httpRequest("DELETE", fmt.Sprintf("%s/multisigs/%s/members/%d", baseURL, multisigID, memberID), nil)
-	printStep(step, resp, "DELETE", fmt.Sprintf("%s/multisigs/%s/members/%d", baseURL, multisigID, memberID))
+	resp = httpRequest("DELETE", fmt.Sprintf("%s/multisigs/%s/members/%s", baseURL, multisigID, memberAddress), nil)
+	printStep(step, resp, "DELETE", fmt.Sprintf("%s/multisigs/%s/members/%s", baseURL, multisigID, memberAddress))
 
 	// Step 12: Delete Vault
 	step = "Step 12: Delete Vault"
-	resp = httpRequest("DELETE", fmt.Sprintf("%s/multisigs/%s/vaults/%d", baseURL, multisigID, vaultID), nil)
-	printStep(step, resp, "DELETE", fmt.Sprintf("%s/multisigs/%s/vaults/%d", baseURL, multisigID, vaultID))
+	resp = httpRequest("DELETE", fmt.Sprintf("%s/multisigs/%s/vaults/%s", baseURL, multisigID, vaultAddress), nil)
+	printStep(step, resp, "DELETE", fmt.Sprintf("%s/multisigs/%s/vaults/%s", baseURL, multisigID, vaultAddress))
 
 	// Step 13: Delete Multisig
 	step = "Step 13: Delete Multisig"

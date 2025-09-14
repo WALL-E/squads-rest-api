@@ -250,7 +250,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/multisigs/{multisig_address}/members/{member_id}": {
+        "/multisigs/{multisig_address}/members/{member_address}": {
             "get": {
                 "description": "Get a single member by ID",
                 "tags": [
@@ -266,9 +266,9 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "integer",
-                        "description": "Member ID",
-                        "name": "member_id",
+                        "type": "string",
+                        "description": "Member Address",
+                        "name": "member_address",
                         "in": "path",
                         "required": true
                     }
@@ -283,7 +283,7 @@ const docTemplate = `{
                 }
             },
             "put": {
-                "description": "Update a member",
+                "description": "Update a member under a multisig",
                 "tags": [
                     "Members"
                 ],
@@ -297,9 +297,9 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "integer",
-                        "description": "Member ID",
-                        "name": "member_id",
+                        "type": "string",
+                        "description": "Member Address",
+                        "name": "member_address",
                         "in": "path",
                         "required": true
                     },
@@ -323,7 +323,7 @@ const docTemplate = `{
                 }
             },
             "delete": {
-                "description": "Delete a member",
+                "description": "Delete a member under a multisig",
                 "tags": [
                     "Members"
                 ],
@@ -337,9 +337,9 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "integer",
-                        "description": "Member ID",
-                        "name": "member_id",
+                        "type": "string",
+                        "description": "Member Address",
+                        "name": "member_address",
                         "in": "path",
                         "required": true
                     }
@@ -437,7 +437,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/multisigs/{multisig_address}/spends/{spend_id}": {
+        "/multisigs/{multisig_address}/spends/{spend_address}": {
             "get": {
                 "description": "Get a single spend by ID",
                 "tags": [
@@ -453,9 +453,9 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "integer",
-                        "description": "Spend ID",
-                        "name": "spend_id",
+                        "type": "string",
+                        "description": "Spend Address",
+                        "name": "spend_address",
                         "in": "path",
                         "required": true
                     }
@@ -470,7 +470,7 @@ const docTemplate = `{
                 }
             },
             "put": {
-                "description": "Update a spend",
+                "description": "Update a spend under a multisig",
                 "tags": [
                     "Spends"
                 ],
@@ -484,9 +484,9 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "integer",
-                        "description": "Spend ID",
-                        "name": "spend_id",
+                        "type": "string",
+                        "description": "Spend Address",
+                        "name": "spend_address",
                         "in": "path",
                         "required": true
                     },
@@ -510,7 +510,7 @@ const docTemplate = `{
                 }
             },
             "delete": {
-                "description": "Delete a spend",
+                "description": "Delete a spend under a multisig",
                 "tags": [
                     "Spends"
                 ],
@@ -524,9 +524,9 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "integer",
-                        "description": "Spend ID",
-                        "name": "spend_id",
+                        "type": "string",
+                        "description": "Spend Address",
+                        "name": "spend_address",
                         "in": "path",
                         "required": true
                     }
@@ -624,7 +624,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/multisigs/{multisig_address}/vaults/{vault_id}": {
+        "/multisigs/{multisig_address}/vaults/{vault_address}": {
             "get": {
                 "description": "Get a single vault by ID",
                 "tags": [
@@ -640,9 +640,9 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "integer",
-                        "description": "Vault ID",
-                        "name": "vault_id",
+                        "type": "string",
+                        "description": "Vault Address",
+                        "name": "vault_address",
                         "in": "path",
                         "required": true
                     }
@@ -657,7 +657,7 @@ const docTemplate = `{
                 }
             },
             "put": {
-                "description": "Update a vault",
+                "description": "Update a vault under a multisig",
                 "tags": [
                     "Vaults"
                 ],
@@ -671,14 +671,14 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "integer",
-                        "description": "Vault ID",
-                        "name": "vault_id",
+                        "type": "string",
+                        "description": "Vault Address",
+                        "name": "vault_address",
                         "in": "path",
                         "required": true
                     },
                     {
-                        "description": "Updated vault object",
+                        "description": "Vault object",
                         "name": "body",
                         "in": "body",
                         "required": true,
@@ -697,7 +697,7 @@ const docTemplate = `{
                 }
             },
             "delete": {
-                "description": "Delete a vault",
+                "description": "Delete a vault under a multisig",
                 "tags": [
                     "Vaults"
                 ],
@@ -711,9 +711,9 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "type": "integer",
-                        "description": "Vault ID",
-                        "name": "vault_id",
+                        "type": "string",
+                        "description": "Vault Address",
+                        "name": "vault_address",
                         "in": "path",
                         "required": true
                     }

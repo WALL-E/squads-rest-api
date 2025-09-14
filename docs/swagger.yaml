@@ -231,20 +231,20 @@ paths:
       summary: Create Member
       tags:
       - Members
-  /multisigs/{multisig_address}/members/{member_id}:
+  /multisigs/{multisig_address}/members/{member_address}:
     delete:
-      description: Delete a member
+      description: Delete a member under a multisig
       parameters:
       - description: Multisig Address
         in: path
         name: multisig_address
         required: true
         type: string
-      - description: Member ID
+      - description: Member Address
         in: path
-        name: member_id
+        name: member_address
         required: true
-        type: integer
+        type: string
       responses:
         "200":
           description: OK
@@ -261,11 +261,11 @@ paths:
         name: multisig_address
         required: true
         type: string
-      - description: Member ID
+      - description: Member Address
         in: path
-        name: member_id
+        name: member_address
         required: true
-        type: integer
+        type: string
       responses:
         "200":
           description: OK
@@ -275,18 +275,18 @@ paths:
       tags:
       - Members
     put:
-      description: Update a member
+      description: Update a member under a multisig
       parameters:
       - description: Multisig Address
         in: path
         name: multisig_address
         required: true
         type: string
-      - description: Member ID
+      - description: Member Address
         in: path
-        name: member_id
+        name: member_address
         required: true
-        type: integer
+        type: string
       - description: Updated member object
         in: body
         name: body
@@ -356,20 +356,20 @@ paths:
       summary: Create Spend
       tags:
       - Spends
-  /multisigs/{multisig_address}/spends/{spend_id}:
+  /multisigs/{multisig_address}/spends/{spend_address}:
     delete:
-      description: Delete a spend
+      description: Delete a spend under a multisig
       parameters:
       - description: Multisig Address
         in: path
         name: multisig_address
         required: true
         type: string
-      - description: Spend ID
+      - description: Spend Address
         in: path
-        name: spend_id
+        name: spend_address
         required: true
-        type: integer
+        type: string
       responses:
         "200":
           description: OK
@@ -386,11 +386,11 @@ paths:
         name: multisig_address
         required: true
         type: string
-      - description: Spend ID
+      - description: Spend Address
         in: path
-        name: spend_id
+        name: spend_address
         required: true
-        type: integer
+        type: string
       responses:
         "200":
           description: OK
@@ -400,18 +400,18 @@ paths:
       tags:
       - Spends
     put:
-      description: Update a spend
+      description: Update a spend under a multisig
       parameters:
       - description: Multisig Address
         in: path
         name: multisig_address
         required: true
         type: string
-      - description: Spend ID
+      - description: Spend Address
         in: path
-        name: spend_id
+        name: spend_address
         required: true
-        type: integer
+        type: string
       - description: Updated spend object
         in: body
         name: body
@@ -481,20 +481,20 @@ paths:
       summary: Create Vault
       tags:
       - Vaults
-  /multisigs/{multisig_address}/vaults/{vault_id}:
+  /multisigs/{multisig_address}/vaults/{vault_address}:
     delete:
-      description: Delete a vault
+      description: Delete a vault under a multisig
       parameters:
       - description: Multisig Address
         in: path
         name: multisig_address
         required: true
         type: string
-      - description: Vault ID
+      - description: Vault Address
         in: path
-        name: vault_id
+        name: vault_address
         required: true
-        type: integer
+        type: string
       responses:
         "200":
           description: OK
@@ -511,11 +511,11 @@ paths:
         name: multisig_address
         required: true
         type: string
-      - description: Vault ID
+      - description: Vault Address
         in: path
-        name: vault_id
+        name: vault_address
         required: true
-        type: integer
+        type: string
       responses:
         "200":
           description: OK
@@ -525,19 +525,19 @@ paths:
       tags:
       - Vaults
     put:
-      description: Update a vault
+      description: Update a vault under a multisig
       parameters:
       - description: Multisig Address
         in: path
         name: multisig_address
         required: true
         type: string
-      - description: Vault ID
+      - description: Vault Address
         in: path
-        name: vault_id
+        name: vault_address
         required: true
-        type: integer
-      - description: Updated vault object
+        type: string
+      - description: Vault object
         in: body
         name: body
         required: true

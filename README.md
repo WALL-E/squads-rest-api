@@ -61,18 +61,60 @@ curl -s -X POST http://localhost:8090/multisigs/0xabc123/spends \
 curl -s "http://localhost:8090/multisigs/0xabc123/spends" | jq
 
 查询单个
-curl -s http://localhost:8090/multisigs/0xabc123/spends/111 | jq
+curl -s http://localhost:8090/multisigs/0xabc123/spends/0xspend1 | jq
 
 更新
-curl -s -X PUT http://localhost:8090/multisigs/0xabc123/spends/111 \
+curl -s -X PUT http://localhost:8090/multisigs/0xabc123/spends/0xspend1 \
   -H "Content-Type: application/json" \
   -d '{"spend_address":"0xspend1"}' | jq
 
 删除
-curl -s -X DELETE http://localhost:8090/multisigs/0xabc123/spends/111 | jq
+curl -s -X DELETE http://localhost:8090/multisigs/0xabc123/spends/0xspend1 | jq
 ```
 
-Vaults 和 Members的接口和Spends保持一致。
+Vaults
+```
+创建
+curl -s -X POST http://localhost:8090/multisigs/0xabc123/vaults \
+  -H "Content-Type: application/json" \
+  -d '{"vault_address":"0xvault1"}' | jq
+
+查询列表
+curl -s "http://localhost:8090/multisigs/0xabc123/vaults" | jq
+
+查询单个
+curl -s http://localhost:8090/multisigs/0xabc123/vaults/0xvault1 | jq
+
+更新
+curl -s -X PUT http://localhost:8090/multisigs/0xabc123/vaults/0xvault1 \
+  -H "Content-Type: application/json" \
+  -d '{"vault_address":"0xvault1"}' | jq
+
+删除
+curl -s -X DELETE http://localhost:8090/multisigs/0xabc123/vaults/0xvault1 | jq
+```
+
+Members
+```
+创建
+curl -s -X POST http://localhost:8090/multisigs/0xabc123/members \
+  -H "Content-Type: application/json" \
+  -d '{"member_address":"0xmember1"}' | jq
+
+查询列表
+curl -s "http://localhost:8090/multisigs/0xabc123/members" | jq
+
+查询单个
+curl -s http://localhost:8090/multisigs/0xabc123/members/0xmember1 | jq
+
+更新
+curl -s -X PUT http://localhost:8090/multisigs/0xabc123/members/0xmember1 \
+  -H "Content-Type: application/json" \
+  -d '{"member_address":"0xmember1"}' | jq
+
+删除
+curl -s -X DELETE http://localhost:8090/multisigs/0xabc123/members/0xmember1 | jq
+```
 
 ## 快速开始
 

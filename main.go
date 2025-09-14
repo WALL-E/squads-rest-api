@@ -287,17 +287,14 @@ func listVaults(c *gin.Context) {
 // @Description Get a single vault by ID
 // @Tags Vaults
 // @Param multisig_address path string true "Multisig Address"
-// @Param vault_id path int true "Vault ID"
+// @Param vault_address path string true "Vault Address"
 // @Success 200 {object} Response
-// @Router /multisigs/{multisig_address}/vaults/{vault_id} [get]
+// @Router /multisigs/{multisig_address}/vaults/{vault_address} [get]
 func getVault(c *gin.Context) {
 	addr := c.Param("multisig_address")
-	id, ok := parseID(c, "vault_id")
-	if !ok {
-		return
-	}
+	vaultAddr := c.Param("vault_address")
 	var item Vault
-	if err := db.Where("multisig_address = ? AND id = ?", addr, id).First(&item).Error; err != nil {
+	if err := db.Where("multisig_address = ? AND vault_address = ?", addr, vaultAddr).First(&item).Error; err != nil {
 		c.JSON(http.StatusNotFound, Response{Success: false, Message: "not found"})
 		return
 	}
@@ -327,21 +324,18 @@ func createVault(c *gin.Context) {
 }
 
 // @Summary Update Vault
-// @Description Update a vault
+// @Description Update a vault under a multisig
 // @Tags Vaults
 // @Param multisig_address path string true "Multisig Address"
-// @Param vault_id path int true "Vault ID"
-// @Param body body Vault true "Updated vault object"
+// @Param vault_address path string true "Vault Address"
+// @Param body body Vault true "Vault object"
 // @Success 200 {object} Response
-// @Router /multisigs/{multisig_address}/vaults/{vault_id} [put]
+// @Router /multisigs/{multisig_address}/vaults/{vault_address} [put]
 func updateVault(c *gin.Context) {
 	addr := c.Param("multisig_address")
-	id, ok := parseID(c, "vault_id")
-	if !ok {
-		return
-	}
+	vaultAddr := c.Param("vault_address")
 	var item Vault
-	if err := db.Where("multisig_address = ? AND id = ?", addr, id).First(&item).Error; err != nil {
+	if err := db.Where("multisig_address = ? AND vault_address = ?", addr, vaultAddr).First(&item).Error; err != nil {
 		c.JSON(http.StatusNotFound, Response{Success: false, Message: "not found"})
 		return
 	}
@@ -360,19 +354,16 @@ func updateVault(c *gin.Context) {
 }
 
 // @Summary Delete Vault
-// @Description Delete a vault
+// @Description Delete a vault under a multisig
 // @Tags Vaults
 // @Param multisig_address path string true "Multisig Address"
-// @Param vault_id path int true "Vault ID"
+// @Param vault_address path string true "Vault Address"
 // @Success 200 {object} Response
-// @Router /multisigs/{multisig_address}/vaults/{vault_id} [delete]
+// @Router /multisigs/{multisig_address}/vaults/{vault_address} [delete]
 func deleteVault(c *gin.Context) {
 	addr := c.Param("multisig_address")
-	id, ok := parseID(c, "vault_id")
-	if !ok {
-		return
-	}
-	if err := db.Where("multisig_address = ? AND id = ?", addr, id).Delete(&Vault{}).Error; err != nil {
+	vaultAddr := c.Param("vault_address")
+	if err := db.Where("multisig_address = ? AND vault_address = ?", addr, vaultAddr).Delete(&Vault{}).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, Response{Success: false, Message: err.Error()})
 		return
 	}
@@ -407,17 +398,14 @@ func listMembers(c *gin.Context) {
 // @Description Get a single member by ID
 // @Tags Members
 // @Param multisig_address path string true "Multisig Address"
-// @Param member_id path int true "Member ID"
+// @Param member_address path string true "Member Address"
 // @Success 200 {object} Response
-// @Router /multisigs/{multisig_address}/members/{member_id} [get]
+// @Router /multisigs/{multisig_address}/members/{member_address} [get]
 func getMember(c *gin.Context) {
 	addr := c.Param("multisig_address")
-	id, ok := parseID(c, "member_id")
-	if !ok {
-		return
-	}
+	memberAddr := c.Param("member_address")
 	var item Member
-	if err := db.Where("multisig_address = ? AND id = ?", addr, id).First(&item).Error; err != nil {
+	if err := db.Where("multisig_address = ? AND member_address = ?", addr, memberAddr).First(&item).Error; err != nil {
 		c.JSON(http.StatusNotFound, Response{Success: false, Message: "not found"})
 		return
 	}
@@ -447,21 +435,18 @@ func createMember(c *gin.Context) {
 }
 
 // @Summary Update Member
-// @Description Update a member
+// @Description Update a member under a multisig
 // @Tags Members
 // @Param multisig_address path string true "Multisig Address"
-// @Param member_id path int true "Member ID"
+// @Param member_address path string true "Member Address"
 // @Param body body Member true "Updated member object"
 // @Success 200 {object} Response
-// @Router /multisigs/{multisig_address}/members/{member_id} [put]
+// @Router /multisigs/{multisig_address}/members/{member_address} [put]
 func updateMember(c *gin.Context) {
 	addr := c.Param("multisig_address")
-	id, ok := parseID(c, "member_id")
-	if !ok {
-		return
-	}
+	memberAddr := c.Param("member_address")
 	var item Member
-	if err := db.Where("multisig_address = ? AND id = ?", addr, id).First(&item).Error; err != nil {
+	if err := db.Where("multisig_address = ? AND member_address = ?", addr, memberAddr).First(&item).Error; err != nil {
 		c.JSON(http.StatusNotFound, Response{Success: false, Message: "not found"})
 		return
 	}
@@ -480,19 +465,16 @@ func updateMember(c *gin.Context) {
 }
 
 // @Summary Delete Member
-// @Description Delete a member
+// @Description Delete a member under a multisig
 // @Tags Members
 // @Param multisig_address path string true "Multisig Address"
-// @Param member_id path int true "Member ID"
+// @Param member_address path string true "Member Address"
 // @Success 200 {object} Response
-// @Router /multisigs/{multisig_address}/members/{member_id} [delete]
+// @Router /multisigs/{multisig_address}/members/{member_address} [delete]
 func deleteMember(c *gin.Context) {
 	addr := c.Param("multisig_address")
-	id, ok := parseID(c, "member_id")
-	if !ok {
-		return
-	}
-	if err := db.Where("multisig_address = ? AND id = ?", addr, id).Delete(&Member{}).Error; err != nil {
+	memberAddr := c.Param("member_address")
+	if err := db.Where("multisig_address = ? AND member_address = ?", addr, memberAddr).Delete(&Member{}).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, Response{Success: false, Message: err.Error()})
 		return
 	}
@@ -527,17 +509,14 @@ func listSpends(c *gin.Context) {
 // @Description Get a single spend by ID
 // @Tags Spends
 // @Param multisig_address path string true "Multisig Address"
-// @Param spend_id path int true "Spend ID"
+// @Param spend_address path string true "Spend Address"
 // @Success 200 {object} Response
-// @Router /multisigs/{multisig_address}/spends/{spend_id} [get]
+// @Router /multisigs/{multisig_address}/spends/{spend_address} [get]
 func getSpend(c *gin.Context) {
 	addr := c.Param("multisig_address")
-	id, ok := parseID(c, "spend_id")
-	if !ok {
-		return
-	}
+	spendAddr := c.Param("spend_address")
 	var item Spend
-	if err := db.Where("multisig_address = ? AND id = ?", addr, id).First(&item).Error; err != nil {
+	if err := db.Where("multisig_address = ? AND spend_address = ?", addr, spendAddr).First(&item).Error; err != nil {
 		c.JSON(http.StatusNotFound, Response{Success: false, Message: "not found"})
 		return
 	}
@@ -567,21 +546,18 @@ func createSpend(c *gin.Context) {
 }
 
 // @Summary Update Spend
-// @Description Update a spend
+// @Description Update a spend under a multisig
 // @Tags Spends
 // @Param multisig_address path string true "Multisig Address"
-// @Param spend_id path int true "Spend ID"
+// @Param spend_address path string true "Spend Address"
 // @Param body body Spend true "Updated spend object"
 // @Success 200 {object} Response
-// @Router /multisigs/{multisig_address}/spends/{spend_id} [put]
+// @Router /multisigs/{multisig_address}/spends/{spend_address} [put]
 func updateSpend(c *gin.Context) {
 	addr := c.Param("multisig_address")
-	id, ok := parseID(c, "spend_id")
-	if !ok {
-		return
-	}
+	spendAddr := c.Param("spend_address")
 	var item Spend
-	if err := db.Where("multisig_address = ? AND id = ?", addr, id).First(&item).Error; err != nil {
+	if err := db.Where("multisig_address = ? AND spend_address = ?", addr, spendAddr).First(&item).Error; err != nil {
 		c.JSON(http.StatusNotFound, Response{Success: false, Message: "not found"})
 		return
 	}
@@ -600,19 +576,16 @@ func updateSpend(c *gin.Context) {
 }
 
 // @Summary Delete Spend
-// @Description Delete a spend
+// @Description Delete a spend under a multisig
 // @Tags Spends
 // @Param multisig_address path string true "Multisig Address"
-// @Param spend_id path int true "Spend ID"
+// @Param spend_address path string true "Spend Address"
 // @Success 200 {object} Response
-// @Router /multisigs/{multisig_address}/spends/{spend_id} [delete]
+// @Router /multisigs/{multisig_address}/spends/{spend_address} [delete]
 func deleteSpend(c *gin.Context) {
 	addr := c.Param("multisig_address")
-	id, ok := parseID(c, "spend_id")
-	if !ok {
-		return
-	}
-	if err := db.Where("multisig_address = ? AND id = ?", addr, id).Delete(&Spend{}).Error; err != nil {
+	spendAddr := c.Param("spend_address")
+	if err := db.Where("multisig_address = ? AND spend_address = ?", addr, spendAddr).Delete(&Spend{}).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, Response{Success: false, Message: err.Error()})
 		return
 	}
@@ -642,24 +615,24 @@ func main() {
 
 		// Vaults
 		v1.GET("/multisigs/:multisig_address/vaults", listVaults)
-		v1.GET("/multisigs/:multisig_address/vaults/:vault_id", getVault)
+		v1.GET("/multisigs/:multisig_address/vaults/:vault_address", getVault)
 		v1.POST("/multisigs/:multisig_address/vaults", createVault)
-		v1.PUT("/multisigs/:multisig_address/vaults/:vault_id", updateVault)
-		v1.DELETE("/multisigs/:multisig_address/vaults/:vault_id", deleteVault)
+		v1.PUT("/multisigs/:multisig_address/vaults/:vault_address", updateVault)
+		v1.DELETE("/multisigs/:multisig_address/vaults/:vault_address", deleteVault)
 
 		// Members
 		v1.GET("/multisigs/:multisig_address/members", listMembers)
-		v1.GET("/multisigs/:multisig_address/members/:member_id", getMember)
+		v1.GET("/multisigs/:multisig_address/members/:member_address", getMember)
 		v1.POST("/multisigs/:multisig_address/members", createMember)
-		v1.PUT("/multisigs/:multisig_address/members/:member_id", updateMember)
-		v1.DELETE("/multisigs/:multisig_address/members/:member_id", deleteMember)
+		v1.PUT("/multisigs/:multisig_address/members/:member_address", updateMember)
+		v1.DELETE("/multisigs/:multisig_address/members/:member_address", deleteMember)
 
 		// Spends
 		v1.GET("/multisigs/:multisig_address/spends", listSpends)
-		v1.GET("/multisigs/:multisig_address/spends/:spend_id", getSpend)
+		v1.GET("/multisigs/:multisig_address/spends/:spend_address", getSpend)
 		v1.POST("/multisigs/:multisig_address/spends", createSpend)
-		v1.PUT("/multisigs/:multisig_address/spends/:spend_id", updateSpend)
-		v1.DELETE("/multisigs/:multisig_address/spends/:spend_id", deleteSpend)
+		v1.PUT("/multisigs/:multisig_address/spends/:spend_address", updateSpend)
+		v1.DELETE("/multisigs/:multisig_address/spends/:spend_address", deleteSpend)
 	}
 
 	r.Run(":8090")
