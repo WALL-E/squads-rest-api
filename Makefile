@@ -3,10 +3,20 @@ SERVER_BIN=server
 TEST_BIN=test-api
 SETUP_BIN=setup-db
 
+# 版本信息
+VERSION ?= $(shell git describe --tags --always --dirty 2>/dev/null || echo "dev")
+BUILD_TIME := $(shell date -u '+%Y-%m-%d %H:%M:%S UTC')
+GIT_COMMIT := $(shell git rev-parse --short HEAD 2>/dev/null || echo "unknown")
+
+# 构建标志
+LDFLAGS = -X 'main.Version=$(VERSION)' \
+          -X 'main.BuildTime=$(BUILD_TIME)' \
+          -X 'main.GitCommit=$(GIT_COMMIT)'
+
 # 运行服务器
 run:
 	go mod tidy
-	go run ./cmd/server
+	go run -ldflags "$(LDFLAGS)" ./cmd/server
 
 # 运行API测试
 test:
@@ -24,7 +34,7 @@ build: build-server build-test build-setup
 # 构建服务器
 build-server:
 	go mod tidy
-	go build -o $(SERVER_BIN) ./cmd/server
+	go build -ldflags "$(LDFLAGS)" -o $(SERVER_BIN) ./cmd/server
 
 # 构建测试工具
 build-test:

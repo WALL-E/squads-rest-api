@@ -1,4 +1,25 @@
 definitions:
+  cmd_server.Response:
+    properties:
+      data: {}
+      message:
+        type: string
+      success:
+        type: boolean
+    type: object
+  main.HealthResponse:
+    properties:
+      build_time:
+        type: string
+      git_commit:
+        type: string
+      message:
+        type: string
+      success:
+        type: boolean
+      version:
+        type: string
+    type: object
   main.Member:
     properties:
       created_at:
@@ -32,14 +53,6 @@ definitions:
         type: string
       updated_at:
         type: string
-    type: object
-  main.Response:
-    properties:
-      data: {}
-      message:
-        type: string
-      success:
-        type: boolean
     type: object
   main.Spend:
     properties:
@@ -78,6 +91,19 @@ definitions:
 info:
   contact: {}
 paths:
+  /health:
+    get:
+      description: Get service health status with build information
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/main.HealthResponse'
+      summary: Health Check
+      tags:
+      - Health
   /multisigs:
     get:
       description: Get multisigs list with pagination, search, and sort
@@ -102,7 +128,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/main.Response'
+            $ref: '#/definitions/cmd_server.Response'
       summary: List Multisigs
       tags:
       - Multisigs
@@ -119,7 +145,7 @@ paths:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/main.Response'
+            $ref: '#/definitions/cmd_server.Response'
       summary: Create Multisig
       tags:
       - Multisigs
@@ -136,7 +162,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/main.Response'
+            $ref: '#/definitions/cmd_server.Response'
       summary: Delete Multisig
       tags:
       - Multisigs
@@ -152,7 +178,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/main.Response'
+            $ref: '#/definitions/cmd_server.Response'
       summary: Get Multisig
       tags:
       - Multisigs
@@ -174,7 +200,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/main.Response'
+            $ref: '#/definitions/cmd_server.Response'
       summary: Update Multisig
       tags:
       - Multisigs
@@ -207,7 +233,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/main.Response'
+            $ref: '#/definitions/cmd_server.Response'
       summary: List Members
       tags:
       - Members
@@ -229,7 +255,7 @@ paths:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/main.Response'
+            $ref: '#/definitions/cmd_server.Response'
       summary: Create Member
       tags:
       - Members
@@ -251,7 +277,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/main.Response'
+            $ref: '#/definitions/cmd_server.Response'
       summary: Delete Member
       tags:
       - Members
@@ -272,7 +298,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/main.Response'
+            $ref: '#/definitions/cmd_server.Response'
       summary: Get Member
       tags:
       - Members
@@ -299,7 +325,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/main.Response'
+            $ref: '#/definitions/cmd_server.Response'
       summary: Update Member
       tags:
       - Members
@@ -332,7 +358,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/main.Response'
+            $ref: '#/definitions/cmd_server.Response'
       summary: List Spends
       tags:
       - Spends
@@ -354,7 +380,7 @@ paths:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/main.Response'
+            $ref: '#/definitions/cmd_server.Response'
       summary: Create Spend
       tags:
       - Spends
@@ -376,7 +402,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/main.Response'
+            $ref: '#/definitions/cmd_server.Response'
       summary: Delete Spend
       tags:
       - Spends
@@ -397,7 +423,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/main.Response'
+            $ref: '#/definitions/cmd_server.Response'
       summary: Get Spend
       tags:
       - Spends
@@ -424,7 +450,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/main.Response'
+            $ref: '#/definitions/cmd_server.Response'
       summary: Update Spend
       tags:
       - Spends
@@ -457,7 +483,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/main.Response'
+            $ref: '#/definitions/cmd_server.Response'
       summary: List Vaults
       tags:
       - Vaults
@@ -479,7 +505,7 @@ paths:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/main.Response'
+            $ref: '#/definitions/cmd_server.Response'
       summary: Create Vault
       tags:
       - Vaults
@@ -501,7 +527,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/main.Response'
+            $ref: '#/definitions/cmd_server.Response'
       summary: Delete Vault
       tags:
       - Vaults
@@ -522,7 +548,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/main.Response'
+            $ref: '#/definitions/cmd_server.Response'
       summary: Get Vault
       tags:
       - Vaults
@@ -549,7 +575,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/main.Response'
+            $ref: '#/definitions/cmd_server.Response'
       summary: Update Vault
       tags:
       - Vaults

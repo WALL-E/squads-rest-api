@@ -40,7 +40,8 @@
 - **分页查询** - 高效的大数据集处理
 - **搜索过滤** - 灵活的数据检索能力
 - **排序支持** - 多字段排序功能
-- **健康检查** - 服务状态监控
+- **健康检查** - 服务状态监控，包含构建时间和版本信息
+- **版本管理** - 自动注入构建时间、Git 提交和版本信息
 - **Swagger 文档** - 完整的 API 文档
 
 ### 🔗 子资源接口
@@ -81,11 +82,13 @@ make help
 # 3. 设置数据库
 make setup
 
-# 4. 启动服务
+# 4. 启动服务（包含版本信息）
 make run
 ```
 
 🎉 **服务启动成功！** 访问 http://localhost:8090
+
+> **💡 提示：** 使用 `make run` 启动的服务会自动包含当前的构建时间、Git 提交和版本信息，可通过 `/health` 接口查看。
 
 ### 🔍 健康检查
 
@@ -97,9 +100,19 @@ curl -s http://localhost:8090/health | jq
 ```json
 {
   "success": true,
-  "message": "ok"
+  "message": "ok",
+  "build_time": "2025-09-18 12:38:31 UTC",
+  "git_commit": "dd85b78",
+  "version": "dd85b78-dirty"
 }
 ```
+
+**字段说明：**
+- `success`: 服务状态 (boolean)
+- `message`: 状态消息 (string)
+- `build_time`: 构建时间 (string)
+- `git_commit`: Git 提交哈希 (string)
+- `version`: 版本信息 (string)
 
 ## 📁 项目结构
 
@@ -133,12 +146,47 @@ squads-rest-api/
 
 | 资源 | 端点 | 描述 |
 |------|------|------|
+| 🩺 **Health** | `/health` | 健康检查和版本信息 |
 | 🔐 **Multisigs** | `/multisigs` | 多签钱包管理 |
 | 🏦 **Vaults** | `/multisigs/{multisig_address}/vaults` | 金库管理 |
 | 👥 **Members** | `/multisigs/{multisig_address}/members` | 成员管理 |
 | 💰 **Spends** | `/multisigs/{multisig_address}/spends` | 支出记录 |
 
 ---
+
+<details>
+<summary><strong>🩺 Health API</strong></summary>
+
+#### 健康检查
+```bash
+curl -s http://localhost:8090/health | jq
+```
+
+**响应示例：**
+```json
+{
+  "success": true,
+  "message": "ok",
+  "build_time": "2025-09-18 12:38:31 UTC",
+  "git_commit": "dd85b78",
+  "version": "dd85b78-dirty"
+}
+```
+
+**字段说明：**
+- `success`: 服务状态，`true` 表示服务正常运行
+- `message`: 状态消息，通常为 "ok"
+- `build_time`: 服务构建时间（UTC 时间）
+- `git_commit`: 构建时的 Git 提交哈希（短格式）
+- `version`: 版本信息，格式为 `{git_commit}[-dirty]`
+
+**使用场景：**
+- 监控服务运行状态
+- 确认部署的代码版本
+- 生产环境问题排查
+- CI/CD 流程验证
+
+</details>
 
 <details>
 <summary><strong>🔐 Multisigs API</strong></summary>
@@ -442,12 +490,21 @@ curl http://localhost:8090/health
 ### 📦 生产构建
 
 ```bash
-# 构建所有组件
+# 构建所有组件（自动注入版本信息）
 make build
 
 # 构建产物
 ls -la server test-api setup-db
+
+# 验证版本信息
+./server &
+curl -s http://localhost:8090/health | jq
 ```
+
+**版本信息自动注入：**
+- 构建时会自动注入当前的 Git 提交哈希、构建时间和版本信息
+- 通过 `/health` 接口可以查看详细的构建信息
+- 支持在生产环境中追踪具体的代码版本
 
 ### 🐳 Docker 部署
 

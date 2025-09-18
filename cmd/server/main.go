@@ -16,6 +16,22 @@ import (
 	_ "github.com/wall-e/squads-rest-api/docs" // swagger docs
 )
 
+// Build information (set during build time)
+var (
+	BuildTime   = "unknown"
+	GitCommit   = "unknown"
+	Version     = "dev"
+)
+
+// HealthResponse represents the health check response
+type HealthResponse struct {
+	Success   bool   `json:"success"`
+	Message   string `json:"message"`
+	BuildTime string `json:"build_time"`
+	GitCommit string `json:"git_commit"`
+	Version   string `json:"version"`
+}
+
 // ---------- Models ----------
 type Multisig struct {
 	ID              uint      `gorm:"primaryKey" json:"id"`
@@ -594,6 +610,22 @@ func deleteSpend(c *gin.Context) {
 	c.JSON(http.StatusOK, Response{Success: true})
 }
 
+// @Summary Health Check
+// @Description Get service health status with build information
+// @Tags Health
+// @Produce json
+// @Success 200 {object} HealthResponse
+// @Router /health [get]
+func healthCheck(c *gin.Context) {
+	c.JSON(http.StatusOK, HealthResponse{
+		Success:   true,
+		Message:   "ok",
+		BuildTime: BuildTime,
+		GitCommit: GitCommit,
+		Version:   Version,
+	})
+}
+
 // ---------- Router ----------
 func main() {
 	initDB()
@@ -604,9 +636,7 @@ func main() {
 	v1 := r.Group("/")
 	{
 		// Health Check
-		v1.GET("/health", func(c *gin.Context) {
-			c.JSON(http.StatusOK, Response{Success: true, Message: "ok"})
-		})
+		v1.GET("/health", healthCheck)
 
 		// Multisigs
 		v1.GET("/multisigs", listMultisigs)

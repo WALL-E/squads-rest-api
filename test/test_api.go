@@ -69,15 +69,23 @@ func printStep(step string, resp Response, method, url string) {
 }
 
 func testAPI() {
+	// Step 0: Health Check
+	step := "Step 0: Health Check"
+	resp := httpRequest("GET", baseURL+"/health", nil)
+	printStep(step, resp, "GET", baseURL+"/health")
+	if !resp.Success {
+		fmt.Println("Warning: Health check failed, but continuing with tests")
+	}
+
 	// Step 1: Create Multisig
-	step := "Step 1: Create Multisig"
+	step = "Step 1: Create Multisig"
 	m1 := map[string]interface{}{
 		"multisig_address": "multisig_test_1",
 		"name":             "Test Multisig",
 		"description":      "testing multisig",
 		"logo":             "https://example.com/test-logo.png",
 	}
-	resp := httpRequest("POST", baseURL+"/multisigs", m1)
+	resp = httpRequest("POST", baseURL+"/multisigs", m1)
 	printStep(step, resp, "POST", baseURL+"/multisigs")
 	if !resp.Success {
 		fmt.Println("Cannot continue, Step 1 failed")
