@@ -46,9 +46,10 @@
 
 ### 🔗 子资源接口
 ```
-/multisigs/{multisig_address}/vaults   # 多签钱包的金库
-/multisigs/{multisig_address}/members  # 多签钱包的成员
-/multisigs/{multisig_address}/spends   # 多签钱包的支出
+/multisigs/{multisig_address}/vaults       # 多签钱包的金库
+/multisigs/{multisig_address}/members      # 多签钱包的成员
+/multisigs/{multisig_address}/spends       # 多签钱包的支出
+/multisigs/{multisig_address}/transactions # 多签钱包的交易记录
 ```
 
 ## 🛠 技术栈
@@ -435,6 +436,127 @@ curl -X PUT http://localhost:8090/multisigs/0xabc123/members/0xmember1 \
 #### 移除成员
 ```bash
 curl -X DELETE http://localhost:8090/multisigs/0xabc123/members/0xmember1
+```
+
+</details>
+
+<details>
+<summary><strong>💰 Transactions API</strong></summary>
+
+#### 创建交易记录
+```bash
+curl -X POST http://localhost:8090/multisigs/0xabc123/transactions \
+  -H "Content-Type: application/json" \
+  -d '{
+    "indexNumber": 1,
+    "signature": "5VfYXLjUCHxjuUjzRXHXGVa4tkNwjiuFqoebHkcd6xJv9AA1L3cVYQoKDrSgUEuS2ggNDtHRnpBMxs1oPkuBjzTz"
+  }'
+```
+
+**响应示例：**
+```json
+{
+  "success": true,
+  "message": "Transaction created successfully",
+  "data": {
+    "id": 1,
+    "indexNumber": 1,
+    "signature": "5VfYXLjUCHxjuUjzRXHXGVa4tkNwjiuFqoebHkcd6xJv9AA1L3cVYQoKDrSgUEuS2ggNDtHRnpBMxs1oPkuBjzTz",
+    "multisig_address": "0xabc123",
+    "created_at": "2024-01-15T10:30:00Z",
+    "updated_at": "2024-01-15T10:30:00Z"
+  }
+}
+```
+
+#### 查询交易记录列表
+```bash
+curl "http://localhost:8090/multisigs/0xabc123/transactions?page=1&limit=10&sort=index_number%20asc"
+```
+
+**响应示例：**
+```json
+{
+  "success": true,
+  "message": "Transactions retrieved successfully",
+  "data": {
+    "items": [
+      {
+        "id": 1,
+        "indexNumber": 1,
+        "signature": "5VfYXLjUCHxjuUjzRXHXGVa4tkNwjiuFqoebHkcd6xJv9AA1L3cVYQoKDrSgUEuS2ggNDtHRnpBMxs1oPkuBjzTz",
+        "multisig_address": "0xabc123",
+        "created_at": "2024-01-15T10:30:00Z",
+        "updated_at": "2024-01-15T10:30:00Z"
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "limit": 10,
+      "total": 1,
+      "total_pages": 1
+    }
+  }
+}
+```
+
+#### 查询单个交易记录
+```bash
+curl "http://localhost:8090/multisigs/0xabc123/transactions/{indexNumber}"
+```
+
+**响应示例：**
+```json
+{
+  "success": true,
+  "message": "Transaction retrieved successfully",
+  "data": {
+    "id": 1,
+    "indexNumber": 1,
+    "signature": "5VfYXLjUCHxjuUjzRXHXGVa4tkNwjiuFqoebHkcd6xJv9AA1L3cVYQoKDrSgUEuS2ggNDtHRnpBMxs1oPkuBjzTz",
+    "multisig_address": "0xabc123",
+    "created_at": "2024-01-15T10:30:00Z",
+    "updated_at": "2024-01-15T10:30:00Z"
+  }
+}
+```
+
+#### 更新交易记录
+```bash
+curl -X PUT http://localhost:8090/multisigs/0xabc123/transactions/{indexNumber} \
+  -H "Content-Type: application/json" \
+  -d '{
+    "indexNumber": 2
+  }'
+```
+
+**响应示例：**
+```json
+{
+  "success": true,
+  "message": "Transaction updated successfully",
+  "data": {
+    "id": 1,
+    "indexNumber": 2,
+    "signature": "5VfYXLjUCHxjuUjzRXHXGVa4tkNwjiuFqoebHkcd6xJv9AA1L3cVYQoKDrSgUEuS2ggNDtHRnpBMxs1oPkuBjzTz",
+    "multisig_address": "0xabc123",
+    "created_at": "2024-01-15T10:30:00Z",
+    "updated_at": "2024-01-15T11:45:00Z"
+  }
+}
+```
+
+#### 删除交易记录
+```bash
+curl -X DELETE http://localhost:8090/multisigs/0xabc123/transactions/{indexNumber}
+```
+
+**响应示例：**
+```json
+{
+  "success": true,
+  "message": "Transaction deleted successfully"
+}
 ```
 
 </details>

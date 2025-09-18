@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"time"
 )
 
 type Response struct {
@@ -79,8 +80,9 @@ func testAPI() {
 
 	// Step 1: Create Multisig
 	step = "Step 1: Create Multisig"
+	timestamp := time.Now().Unix()
 	m1 := map[string]interface{}{
-		"multisig_address": "multisig_test_1",
+		"multisig_address": fmt.Sprintf("multisig_test_%d", timestamp),
 		"name":             "Test Multisig",
 		"description":      "testing multisig",
 		"logo":             "https://example.com/test-logo.png",
@@ -96,7 +98,7 @@ func testAPI() {
 	// Step 2: Create Vault
 	step = "Step 2: Create Vault"
 	v1 := map[string]interface{}{
-		"vault_address": "vault_test_1",
+		"vault_address": fmt.Sprintf("vault_test_%d", timestamp),
 		"name":          "Test Vault 1",
 		"description":   "vault testing",
 	}
@@ -110,7 +112,7 @@ func testAPI() {
 	// Step 3: Create Member
 	step = "Step 3: Create Member"
 	mem1 := map[string]interface{}{
-		"member_address": "member_test_1",
+		"member_address": fmt.Sprintf("member_test_%d", timestamp),
 		"name":           "Test Member 1",
 		"description":    "member testing",
 	}
@@ -124,7 +126,7 @@ func testAPI() {
 	// Step 4: Create Spend
 	step = "Step 4: Create Spend"
 	sp1 := map[string]interface{}{
-		"spend_address": "spend_test_1",
+		"spend_address": fmt.Sprintf("spend_test_%d", timestamp),
 		"name":          "Test Spend 1",
 		"description":   "spend testing",
 	}
@@ -135,48 +137,75 @@ func testAPI() {
 		spendAddress = sp1["spend_address"].(string)
 	}
 
-	// Step 5: List Multisigs
-	step = "Step 5: List Multisigs"
+	// Step 5: Create Transaction
+	step = "Step 5: Create Transaction"
+	tx1 := map[string]interface{}{
+		"indexNumber": 1,
+		"signature":   "5VfYXLjUCHxjuUjzRXHXGVa4tkNwjiuFqoebHkcd6xJv9AA1L3cVYQoKDrSgUEuS2ggNDtHRnpBMxs1oPkuBjzTz",
+	}
+	resp = httpRequest("POST", fmt.Sprintf("%s/multisigs/%s/transactions", baseURL, multisigID), tx1)
+	printStep(step, resp, "POST", fmt.Sprintf("%s/multisigs/%s/transactions", baseURL, multisigID))
+	transactionIndexNumber := 0
+	if resp.Success {
+		if data, ok := resp.Data.(map[string]interface{}); ok {
+			if indexNum, exists := data["indexNumber"]; exists {
+				transactionIndexNumber = int(indexNum.(float64))
+			}
+		}
+	}
+
+	// Step 6: List Multisigs
+	step = "Step 6: List Multisigs"
 	resp = httpRequest("GET", fmt.Sprintf("%s/multisigs?sort=%s", baseURL, url.QueryEscape("name")), nil)
 	printStep(step, resp, "GET", fmt.Sprintf("%s/multisigs?sort=%s", baseURL, url.QueryEscape("name")))
 
-	// Step 6: Get Multisig
-	step = "Step 6: Get Multisig"
+	// Step 7: Get Multisig
+	step = "Step 7: Get Multisig"
 	resp = httpRequest("GET", fmt.Sprintf("%s/multisigs/%s", baseURL, multisigID), nil)
 	printStep(step, resp, "GET", fmt.Sprintf("%s/multisigs/%s", baseURL, multisigID))
 
-	// Step 7: List Vaults
-	step = "Step 7: List Vaults"
+	// Step 8: List Vaults
+	step = "Step 8: List Vaults"
 	resp = httpRequest("GET", fmt.Sprintf("%s/multisigs/%s/vaults?sort=%s", baseURL, multisigID, url.QueryEscape("name asc")), nil)
 	printStep(step, resp, "GET", fmt.Sprintf("%s/multisigs/%s/vaults?sort=%s", baseURL, multisigID, url.QueryEscape("name asc")))
 
-	// Step 8: List Members
-	step = "Step 8: List Members"
+	// Step 9: List Members
+	step = "Step 9: List Members"
 	resp = httpRequest("GET", fmt.Sprintf("%s/multisigs/%s/members?sort=%s", baseURL, multisigID, url.QueryEscape("name desc")), nil)
 	printStep(step, resp, "GET", fmt.Sprintf("%s/multisigs/%s/members?sort=%s", baseURL, multisigID, url.QueryEscape("name desc")))
 
-	// Step 9: List Spends
-	step = "Step 9: List Spends"
+	// Step 10: List Spends
+	step = "Step 10: List Spends"
 	resp = httpRequest("GET", fmt.Sprintf("%s/multisigs/%s/spends?sort=%s", baseURL, multisigID, url.QueryEscape("name asc")), nil)
 	printStep(step, resp, "GET", fmt.Sprintf("%s/multisigs/%s/spends?sort=%s", baseURL, multisigID, url.QueryEscape("name asc")))
 
-	// Step 10: Delete Spend
-	step = "Step 10: Delete Spend"
+	// Step 11: List Transactions
+	step = "Step 11: List Transactions"
+	resp = httpRequest("GET", fmt.Sprintf("%s/multisigs/%s/transactions?sort=%s", baseURL, multisigID, url.QueryEscape("index_number asc")), nil)
+	printStep(step, resp, "GET", fmt.Sprintf("%s/multisigs/%s/transactions?sort=%s", baseURL, multisigID, url.QueryEscape("index_number asc")))
+
+	// Step 12: Delete Transaction
+	step = "Step 12: Delete Transaction"
+	resp = httpRequest("DELETE", fmt.Sprintf("%s/multisigs/%s/transactions/%d", baseURL, multisigID, transactionIndexNumber), nil)
+	printStep(step, resp, "DELETE", fmt.Sprintf("%s/multisigs/%s/transactions/%d", baseURL, multisigID, transactionIndexNumber))
+
+	// Step 13: Delete Spend
+	step = "Step 13: Delete Spend"
 	resp = httpRequest("DELETE", fmt.Sprintf("%s/multisigs/%s/spends/%s", baseURL, multisigID, spendAddress), nil)
 	printStep(step, resp, "DELETE", fmt.Sprintf("%s/multisigs/%s/spends/%s", baseURL, multisigID, spendAddress))
 
-	// Step 11: Delete Member
-	step = "Step 11: Delete Member"
+	// Step 14: Delete Member
+	step = "Step 14: Delete Member"
 	resp = httpRequest("DELETE", fmt.Sprintf("%s/multisigs/%s/members/%s", baseURL, multisigID, memberAddress), nil)
 	printStep(step, resp, "DELETE", fmt.Sprintf("%s/multisigs/%s/members/%s", baseURL, multisigID, memberAddress))
 
-	// Step 12: Delete Vault
-	step = "Step 12: Delete Vault"
+	// Step 15: Delete Vault
+	step = "Step 15: Delete Vault"
 	resp = httpRequest("DELETE", fmt.Sprintf("%s/multisigs/%s/vaults/%s", baseURL, multisigID, vaultAddress), nil)
 	printStep(step, resp, "DELETE", fmt.Sprintf("%s/multisigs/%s/vaults/%s", baseURL, multisigID, vaultAddress))
 
-	// Step 13: Delete Multisig
-	step = "Step 13: Delete Multisig"
+	// Step 16: Delete Multisig
+	step = "Step 16: Delete Multisig"
 	resp = httpRequest("DELETE", fmt.Sprintf("%s/multisigs/%s", baseURL, multisigID), nil)
 	printStep(step, resp, "DELETE", fmt.Sprintf("%s/multisigs/%s", baseURL, multisigID))
 

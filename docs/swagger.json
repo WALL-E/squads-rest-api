@@ -4,6 +4,26 @@
         "contact": {}
     },
     "paths": {
+        "/": {
+            "get": {
+                "description": "Get API documentation homepage with links to Swagger UI",
+                "produces": [
+                    "text/html"
+                ],
+                "tags": [
+                    "Documentation"
+                ],
+                "summary": "API Documentation",
+                "responses": {
+                    "200": {
+                        "description": "HTML content",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/health": {
             "get": {
                 "description": "Get service health status with build information",
@@ -550,6 +570,193 @@
                 }
             }
         },
+        "/multisigs/{multisig_address}/transactions": {
+            "get": {
+                "description": "Get transactions list of a multisig with pagination, search, sort",
+                "tags": [
+                    "Transactions"
+                ],
+                "summary": "List Transactions",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Multisig Address",
+                        "name": "multisig_address",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page number",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page size",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Search keyword",
+                        "name": "search",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Sort field and order, e.g., 'id desc'",
+                        "name": "sort",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/cmd_server.Response"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a new transaction under a multisig",
+                "tags": [
+                    "Transactions"
+                ],
+                "summary": "Create Transaction",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Multisig Address",
+                        "name": "multisig_address",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Transaction object",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/main.Transaction"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/cmd_server.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/multisigs/{multisig_address}/transactions/{indexNumber}": {
+            "get": {
+                "description": "Get a single transaction by index number",
+                "tags": [
+                    "Transactions"
+                ],
+                "summary": "Get Transaction",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Multisig Address",
+                        "name": "multisig_address",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Transaction Index Number",
+                        "name": "indexNumber",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/cmd_server.Response"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update an existing transaction by index number",
+                "tags": [
+                    "Transactions"
+                ],
+                "summary": "Update Transaction",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Multisig Address",
+                        "name": "multisig_address",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Transaction Index Number",
+                        "name": "indexNumber",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Updated transaction object",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/main.Transaction"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/cmd_server.Response"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete a transaction under a multisig",
+                "tags": [
+                    "Transactions"
+                ],
+                "summary": "Delete Transaction",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Multisig Address",
+                        "name": "multisig_address",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Transaction Index Number",
+                        "name": "indexNumber",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/cmd_server.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/multisigs/{multisig_address}/vaults": {
             "get": {
                 "description": "Get vaults list of a multisig with pagination, search, sort",
@@ -842,6 +1049,29 @@
                     "type": "string"
                 },
                 "spend_address": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "main.Transaction": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "indexNumber": {
+                    "type": "integer"
+                },
+                "multisig_address": {
+                    "type": "string"
+                },
+                "signature": {
                     "type": "string"
                 },
                 "updated_at": {

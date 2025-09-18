@@ -71,6 +71,21 @@ definitions:
       updated_at:
         type: string
     type: object
+  main.Transaction:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      indexNumber:
+        type: integer
+      multisig_address:
+        type: string
+      signature:
+        type: string
+      updated_at:
+        type: string
+    type: object
   main.Vault:
     properties:
       created_at:
@@ -91,6 +106,19 @@ definitions:
 info:
   contact: {}
 paths:
+  /:
+    get:
+      description: Get API documentation homepage with links to Swagger UI
+      produces:
+      - text/html
+      responses:
+        "200":
+          description: HTML content
+          schema:
+            type: string
+      summary: API Documentation
+      tags:
+      - Documentation
   /health:
     get:
       description: Get service health status with build information
@@ -454,6 +482,131 @@ paths:
       summary: Update Spend
       tags:
       - Spends
+  /multisigs/{multisig_address}/transactions:
+    get:
+      description: Get transactions list of a multisig with pagination, search, sort
+      parameters:
+      - description: Multisig Address
+        in: path
+        name: multisig_address
+        required: true
+        type: string
+      - description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Page size
+        in: query
+        name: limit
+        type: integer
+      - description: Search keyword
+        in: query
+        name: search
+        type: string
+      - description: Sort field and order, e.g., 'id desc'
+        in: query
+        name: sort
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/cmd_server.Response'
+      summary: List Transactions
+      tags:
+      - Transactions
+    post:
+      description: Create a new transaction under a multisig
+      parameters:
+      - description: Multisig Address
+        in: path
+        name: multisig_address
+        required: true
+        type: string
+      - description: Transaction object
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/main.Transaction'
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/cmd_server.Response'
+      summary: Create Transaction
+      tags:
+      - Transactions
+  /multisigs/{multisig_address}/transactions/{indexNumber}:
+    delete:
+      description: Delete a transaction under a multisig
+      parameters:
+      - description: Multisig Address
+        in: path
+        name: multisig_address
+        required: true
+        type: string
+      - description: Transaction Index Number
+        in: path
+        name: indexNumber
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/cmd_server.Response'
+      summary: Delete Transaction
+      tags:
+      - Transactions
+    get:
+      description: Get a single transaction by index number
+      parameters:
+      - description: Multisig Address
+        in: path
+        name: multisig_address
+        required: true
+        type: string
+      - description: Transaction Index Number
+        in: path
+        name: indexNumber
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/cmd_server.Response'
+      summary: Get Transaction
+      tags:
+      - Transactions
+    put:
+      description: Update an existing transaction by index number
+      parameters:
+      - description: Multisig Address
+        in: path
+        name: multisig_address
+        required: true
+        type: string
+      - description: Transaction Index Number
+        in: path
+        name: indexNumber
+        required: true
+        type: integer
+      - description: Updated transaction object
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/main.Transaction'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/cmd_server.Response'
+      summary: Update Transaction
+      tags:
+      - Transactions
   /multisigs/{multisig_address}/vaults:
     get:
       description: Get vaults list of a multisig with pagination, search, sort

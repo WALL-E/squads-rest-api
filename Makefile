@@ -21,12 +21,12 @@ run:
 # 运行API测试
 test:
 	go mod tidy
-	go run ./cmd/test
+	go run -ldflags "$(LDFLAGS)" ./cmd/test
 
 # 运行数据库设置
 setup:
 	go mod tidy
-	go run ./cmd/setup
+	go run -ldflags "$(LDFLAGS)" ./cmd/setup
 
 # 构建所有组件
 build: build-server build-test build-setup
@@ -39,12 +39,12 @@ build-server:
 # 构建测试工具
 build-test:
 	go mod tidy
-	go build -o $(TEST_BIN) ./cmd/test
+	go build -ldflags "$(LDFLAGS)" -o $(TEST_BIN) ./cmd/test
 
 # 构建数据库设置工具
 build-setup:
 	go mod tidy
-	go build -o $(SETUP_BIN) ./cmd/setup
+	go build -ldflags "$(LDFLAGS)" -o $(SETUP_BIN) ./cmd/setup
 
 # 清理构建文件
 clean:

@@ -135,18 +135,40 @@ func main() {
 		spendAddress = sp1["spend_address"].(string)
 	}
 
-	// Step 5: List Multisigs
-	step = "Step 5: List Multisigs"
+	// Step 5: Create Transaction
+	step = "Step 5: Create Transaction"
+	tx1 := map[string]interface{}{
+		"indexNumber": 1,
+		"signature":   "5VfYXLjUCHxjuUjzRXHXGVa4tkNwjiuFqoebHkcd6xJv9AA1L3cVYQoKDrSgUEuS2ggNDtHRnpBMxs1oPkuBjzTz",
+	}
+	resp = httpRequest("POST", fmt.Sprintf("%s/multisigs/%s/transactions", baseURL, multisigID), tx1)
+	printStep(step, resp, "POST", fmt.Sprintf("%s/multisigs/%s/transactions", baseURL, multisigID))
+	transactionIndexNumber := 0
+	if resp.Success {
+		if data, ok := resp.Data.(map[string]interface{}); ok {
+			if indexNum, exists := data["indexNumber"]; exists {
+				transactionIndexNumber = int(indexNum.(float64))
+			}
+		}
+	}
+
+	// Step 6: Get Transaction
+	step = "Step 6: Get Transaction"
+	resp = httpRequest("GET", fmt.Sprintf("%s/multisigs/%s/transactions/%d", baseURL, multisigID, transactionIndexNumber), nil)
+	printStep(step, resp, "GET", fmt.Sprintf("%s/multisigs/%s/transactions/%d", baseURL, multisigID, transactionIndexNumber))
+
+	// Step 7: List Multisigs
+	step = "Step 7: List Multisigs"
 	resp = httpRequest("GET", fmt.Sprintf("%s/multisigs?sort=%s", baseURL, url.QueryEscape("name")), nil)
 	printStep(step, resp, "GET", fmt.Sprintf("%s/multisigs?sort=%s", baseURL, url.QueryEscape("name")))
 
-	// Step 6: Get Multisig
-	step = "Step 6: Get Multisig"
+	// Step 8: Get Multisig
+	step = "Step 8: Get Multisig"
 	resp = httpRequest("GET", fmt.Sprintf("%s/multisigs/%s", baseURL, multisigID), nil)
 	printStep(step, resp, "GET", fmt.Sprintf("%s/multisigs/%s", baseURL, multisigID))
 
-	// Step 6.5: Update Multisig
-	step = "Step 6.5: Update Multisig"
+	// Step 9: Update Multisig
+	step = "Step 9: Update Multisig"
 	m1Update := map[string]interface{}{
 		"name":        "Updated Test Multisig",
 		"description": "updated testing multisig",
@@ -155,38 +177,56 @@ func main() {
 	resp = httpRequest("PUT", fmt.Sprintf("%s/multisigs/%s", baseURL, multisigID), m1Update)
 	printStep(step, resp, "PUT", fmt.Sprintf("%s/multisigs/%s", baseURL, multisigID))
 
-	// Step 7: List Vaults
-	step = "Step 7: List Vaults"
+	// Step 10: Update Transaction
+	step = "Step 10: Update Transaction"
+	txUpdate := map[string]interface{}{
+		"signature": "6WgZXMkVDHyjvVkARYIYHWb5ulOxkjvGqpfcIlde7yKw0BB2M4dWZRpLEsSgVFvT3hhOEuISopCNyt2pQlvCk0U0",
+	}
+	resp = httpRequest("PUT", fmt.Sprintf("%s/multisigs/%s/transactions/%d", baseURL, multisigID, transactionIndexNumber), txUpdate)
+	printStep(step, resp, "PUT", fmt.Sprintf("%s/multisigs/%s/transactions/%d", baseURL, multisigID, transactionIndexNumber))
+
+	// Step 11: List Vaults
+	step = "Step 11: List Vaults"
 	resp = httpRequest("GET", fmt.Sprintf("%s/multisigs/%s/vaults?sort=%s", baseURL, multisigID, url.QueryEscape("name asc")), nil)
 	printStep(step, resp, "GET", fmt.Sprintf("%s/multisigs/%s/vaults?sort=%s", baseURL, multisigID, url.QueryEscape("name asc")))
 
-	// Step 8: List Members
-	step = "Step 8: List Members"
+	// Step 12: List Members
+	step = "Step 12: List Members"
 	resp = httpRequest("GET", fmt.Sprintf("%s/multisigs/%s/members?sort=%s", baseURL, multisigID, url.QueryEscape("name desc")), nil)
 	printStep(step, resp, "GET", fmt.Sprintf("%s/multisigs/%s/members?sort=%s", baseURL, multisigID, url.QueryEscape("name desc")))
 
-	// Step 9: List Spends
-	step = "Step 9: List Spends"
+	// Step 13: List Spends
+	step = "Step 13: List Spends"
 	resp = httpRequest("GET", fmt.Sprintf("%s/multisigs/%s/spends?sort=%s", baseURL, multisigID, url.QueryEscape("name asc")), nil)
 	printStep(step, resp, "GET", fmt.Sprintf("%s/multisigs/%s/spends?sort=%s", baseURL, multisigID, url.QueryEscape("name asc")))
 
-	// Step 10: Delete Spend
-	step = "Step 10: Delete Spend"
+	// Step 14: List Transactions
+	step = "Step 14: List Transactions"
+	resp = httpRequest("GET", fmt.Sprintf("%s/multisigs/%s/transactions?sort=%s", baseURL, multisigID, url.QueryEscape("index_number asc")), nil)
+	printStep(step, resp, "GET", fmt.Sprintf("%s/multisigs/%s/transactions?sort=%s", baseURL, multisigID, url.QueryEscape("index_number asc")))
+
+	// Step 15: Delete Transaction
+	step = "Step 15: Delete Transaction"
+	resp = httpRequest("DELETE", fmt.Sprintf("%s/multisigs/%s/transactions/%d", baseURL, multisigID, transactionIndexNumber), nil)
+	printStep(step, resp, "DELETE", fmt.Sprintf("%s/multisigs/%s/transactions/%d", baseURL, multisigID, transactionIndexNumber))
+
+	// Step 16: Delete Spend
+	step = "Step 16: Delete Spend"
 	resp = httpRequest("DELETE", fmt.Sprintf("%s/multisigs/%s/spends/%s", baseURL, multisigID, spendAddress), nil)
 	printStep(step, resp, "DELETE", fmt.Sprintf("%s/multisigs/%s/spends/%s", baseURL, multisigID, spendAddress))
 
-	// Step 11: Delete Member
-	step = "Step 11: Delete Member"
+	// Step 17: Delete Member
+	step = "Step 17: Delete Member"
 	resp = httpRequest("DELETE", fmt.Sprintf("%s/multisigs/%s/members/%s", baseURL, multisigID, memberAddress), nil)
 	printStep(step, resp, "DELETE", fmt.Sprintf("%s/multisigs/%s/members/%s", baseURL, multisigID, memberAddress))
 
-	// Step 12: Delete Vault
-	step = "Step 12: Delete Vault"
+	// Step 18: Delete Vault
+	step = "Step 18: Delete Vault"
 	resp = httpRequest("DELETE", fmt.Sprintf("%s/multisigs/%s/vaults/%s", baseURL, multisigID, vaultAddress), nil)
 	printStep(step, resp, "DELETE", fmt.Sprintf("%s/multisigs/%s/vaults/%s", baseURL, multisigID, vaultAddress))
 
-	// Step 13: Delete Multisig
-	step = "Step 13: Delete Multisig"
+	// Step 19: Delete Multisig
+	step = "Step 19: Delete Multisig"
 	resp = httpRequest("DELETE", fmt.Sprintf("%s/multisigs/%s", baseURL, multisigID), nil)
 	printStep(step, resp, "DELETE", fmt.Sprintf("%s/multisigs/%s", baseURL, multisigID))
 
@@ -196,7 +236,7 @@ func main() {
 
 func generateReport() {
 	html := "<html><head><title>API Test Report</title></head><body>"
-	html += "<h1>API Test Report</h1><table border='1' cellpadding='5'><tr><th>Step</th><th>Method</th><th>URL</th><th>Success</th><th>Response</th></tr>"
+	html += "<h1>API Test Report (19 steps)</h1><table border='1' cellpadding='5'><tr><th>Step</th><th>Method</th><th>URL</th><th>Success</th><th>Response</th></tr>"
 	for _, r := range report {
 		color := "green"
 		if !r.Success {

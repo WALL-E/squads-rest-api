@@ -18,9 +18,9 @@ import (
 
 // Build information (set during build time)
 var (
-	BuildTime   = "unknown"
-	GitCommit   = "unknown"
-	Version     = "dev"
+	BuildTime = "unknown"
+	GitCommit = "unknown"
+	Version   = "dev"
 )
 
 // HealthResponse represents the health check response
@@ -73,6 +73,15 @@ type Spend struct {
 	UpdatedAt       time.Time `gorm:"autoUpdateTime" json:"updated_at"`
 }
 
+type Transaction struct {
+	ID              uint      `gorm:"primaryKey" json:"id"`
+	IndexNumber     uint      `gorm:"not null" json:"indexNumber"`
+	Signature       string    `gorm:"type:varchar(255);uniqueIndex;not null" json:"signature"`
+	MultisigAddress string    `gorm:"type:varchar(255);not null;index" json:"multisig_address"`
+	CreatedAt       time.Time `gorm:"autoCreateTime" json:"created_at"`
+	UpdatedAt       time.Time `gorm:"autoUpdateTime" json:"updated_at"`
+}
+
 // ---------- Response ----------
 type Response struct {
 	Success bool        `json:"success"`
@@ -95,8 +104,11 @@ func initDB() {
 	if err != nil {
 		log.Fatal("failed to connect database: ", err)
 	}
-	if err := db.AutoMigrate(&Multisig{}, &Vault{}, &Member{}, &Spend{}); err != nil {
-		log.Fatal("migration failed: ", err)
+
+	// Auto migrate the schema
+	err = db.AutoMigrate(&Multisig{}, &Vault{}, &Member{}, &Spend{}, &Transaction{})
+	if err != nil {
+		log.Fatal("failed to migrate database: ", err)
 	}
 }
 
@@ -267,6 +279,9 @@ func deleteMultisig(c *gin.Context) {
 			return err
 		}
 		if err := tx.Where("multisig_address = ?", addr).Delete(&Spend{}).Error; err != nil {
+			return err
+		}
+		if err := tx.Where("multisig_address = ?", addr).Delete(&Transaction{}).Error; err != nil {
 			return err
 		}
 		return tx.Delete(&ms).Error
@@ -610,6 +625,125 @@ func deleteSpend(c *gin.Context) {
 	c.JSON(http.StatusOK, Response{Success: true})
 }
 
+// ==================== Transaction Handlers ====================
+
+// @Summary List Transactions
+// @Description Get transactions list of a multisig with pagination, search, sort
+// @Tags Transactions
+// @Param multisig_address path string true "Multisig Address"
+// @Param page query int false "Page number"
+// @Param limit query int false "Page size"
+// @Param search query string false "Search keyword"
+// @Param sort query string false "Sort field and order, e.g., 'id desc'"
+// @Success 200 {object} Response
+// @Router /multisigs/{multisig_address}/transactions [get]
+func listTransactions(c *gin.Context) {
+	addr := c.Param("multisig_address")
+	var items []Transaction
+	tx := applyQuery(c, db.Model(&Transaction{}).Where("multisig_address = ?", addr), []string{"signature"}, []string{"id", "index_number", "created_at", "updated_at"})
+	result, err := paginate(c, tx, &items)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, Response{Success: false, Message: err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, Response{Success: true, Data: result})
+}
+
+// @Summary Get Transaction
+// @Description Get a single transaction by index number
+// @Tags Transactions
+// @Param multisig_address path string true "Multisig Address"
+// @Param indexNumber path int true "Transaction Index Number"
+// @Success 200 {object} Response
+// @Router /multisigs/{multisig_address}/transactions/{indexNumber} [get]
+func getTransaction(c *gin.Context) {
+	addr := c.Param("multisig_address")
+	indexNumber, ok := parseID(c, "indexNumber")
+	if !ok {
+		return
+	}
+	var item Transaction
+	if err := db.Where("multisig_address = ? AND index_number = ?", addr, indexNumber).First(&item).Error; err != nil {
+		c.JSON(http.StatusNotFound, Response{Success: false, Message: "not found"})
+		return
+	}
+	c.JSON(http.StatusOK, Response{Success: true, Data: item})
+}
+
+// @Summary Create Transaction
+// @Description Create a new transaction under a multisig
+// @Tags Transactions
+// @Param multisig_address path string true "Multisig Address"
+// @Param body body Transaction true "Transaction object"
+// @Success 201 {object} Response
+// @Router /multisigs/{multisig_address}/transactions [post]
+func createTransaction(c *gin.Context) {
+	addr := c.Param("multisig_address")
+	var item Transaction
+	if err := c.ShouldBindJSON(&item); err != nil {
+		c.JSON(http.StatusBadRequest, Response{Success: false, Message: err.Error()})
+		return
+	}
+	item.MultisigAddress = addr
+	if err := db.Create(&item).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, Response{Success: false, Message: err.Error()})
+		return
+	}
+	c.JSON(http.StatusCreated, Response{Success: true, Data: item})
+}
+
+// @Summary Update Transaction
+// @Description Update an existing transaction by index number
+// @Tags Transactions
+// @Param multisig_address path string true "Multisig Address"
+// @Param indexNumber path int true "Transaction Index Number"
+// @Param body body Transaction true "Updated transaction object"
+// @Success 200 {object} Response
+// @Router /multisigs/{multisig_address}/transactions/{indexNumber} [put]
+func updateTransaction(c *gin.Context) {
+	addr := c.Param("multisig_address")
+	indexNumber, ok := parseID(c, "indexNumber")
+	if !ok {
+		return
+	}
+	var tx Transaction
+	if err := db.Where("multisig_address = ? AND index_number = ?", addr, indexNumber).First(&tx).Error; err != nil {
+		c.JSON(http.StatusNotFound, Response{Success: false, Message: "not found"})
+		return
+	}
+	var input Transaction
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, Response{Success: false, Message: err.Error()})
+		return
+	}
+	tx.IndexNumber = input.IndexNumber
+	if err := db.Save(&tx).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, Response{Success: false, Message: err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, Response{Success: true, Data: tx})
+}
+
+// @Summary Delete Transaction
+// @Description Delete a transaction under a multisig
+// @Tags Transactions
+// @Param multisig_address path string true "Multisig Address"
+// @Param indexNumber path int true "Transaction Index Number"
+// @Success 200 {object} Response
+// @Router /multisigs/{multisig_address}/transactions/{indexNumber} [delete]
+func deleteTransaction(c *gin.Context) {
+	addr := c.Param("multisig_address")
+	indexNumber, ok := parseID(c, "indexNumber")
+	if !ok {
+		return
+	}
+	if err := db.Where("multisig_address = ? AND index_number = ?", addr, indexNumber).Delete(&Transaction{}).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, Response{Success: false, Message: err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, Response{Success: true})
+}
+
 // @Summary Health Check
 // @Description Get service health status with build information
 // @Tags Health
@@ -626,6 +760,125 @@ func healthCheck(c *gin.Context) {
 	})
 }
 
+// @Summary API Documentation
+// @Description Get API documentation homepage with links to Swagger UI
+// @Tags Documentation
+// @Produce html
+// @Success 200 {string} string "HTML content"
+// @Router / [get]
+func apiDocumentation(c *gin.Context) {
+	html := `<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Squads REST API 文档</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 40px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #007cba;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #555;
+            margin-top: 30px;
+        }
+        .api-link {
+            display: inline-block;
+            background: #007cba;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 10px 10px 10px 0;
+            transition: background-color 0.3s;
+        }
+        .api-link:hover {
+            background: #005a87;
+        }
+        .description {
+            background: #f8f9fa;
+            padding: 20px;
+            border-left: 4px solid #007cba;
+            margin: 20px 0;
+        }
+        .endpoint {
+            background: #f1f3f4;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            margin: 5px 0;
+        }
+        .version-info {
+            background: #e8f5e8;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Squads REST API</h1>
+        
+        <div class="description">
+            <p><strong>欢迎使用 Squads REST API！</strong></p>
+            <p>这是一个用于管理多签钱包、金库、成员、支出和交易的 RESTful API 服务。</p>
+        </div>
+
+        <h2>📚 API 文档</h2>
+         <a href="/swagger/index.html" class="api-link">📖 Swagger UI 文档</a>
+        <a href="/health" class="api-link">💚 健康检查</a>
+
+        <h2>🔗 主要接口</h2>
+        <div class="endpoint">GET /multisigs - 获取多签钱包列表</div>
+        <div class="endpoint">POST /multisigs - 创建多签钱包</div>
+        <div class="endpoint">GET /multisigs/{address}/vaults - 获取金库列表</div>
+        <div class="endpoint">GET /multisigs/{address}/members - 获取成员列表</div>
+        <div class="endpoint">GET /multisigs/{address}/spends - 获取支出列表</div>
+        <div class="endpoint">GET /multisigs/{address}/transactions - 获取交易列表</div>
+
+        <h2>🛠️ 技术栈</h2>
+        <ul>
+            <li><strong>框架:</strong> Gin (Go)</li>
+            <li><strong>数据库:</strong> MySQL + GORM</li>
+            <li><strong>文档:</strong> Swagger/OpenAPI 3.0</li>
+            <li><strong>部署:</strong> Docker + Nginx</li>
+        </ul>
+
+        <div class="version-info">
+            <h3>📋 服务信息</h3>
+            <p><strong>服务地址:</strong> http://localhost:8090</p>
+            <p><strong>API 版本:</strong> v1</p>
+            <p><strong>文档更新:</strong> 2025年</p>
+        </div>
+
+        <h2>🚀 快速开始</h2>
+        <p>1. 查看 <a href="/swagger/index.html">Swagger 文档</a> 了解详细的 API 接口</p>
+        <p>2. 使用 <a href="/health">健康检查接口</a> 验证服务状态</p>
+        <p>3. 开始调用 API 接口进行开发</p>
+    </div>
+</body>
+</html>`
+	c.Header("Content-Type", "text/html; charset=utf-8")
+	c.String(http.StatusOK, html)
+}
+
 // ---------- Router ----------
 func main() {
 	initDB()
@@ -635,6 +888,9 @@ func main() {
 
 	v1 := r.Group("/")
 	{
+		// API Documentation
+		v1.GET("/", apiDocumentation)
+
 		// Health Check
 		v1.GET("/health", healthCheck)
 
@@ -665,6 +921,13 @@ func main() {
 		v1.POST("/multisigs/:multisig_address/spends", createSpend)
 		v1.PUT("/multisigs/:multisig_address/spends/:spend_address", updateSpend)
 		v1.DELETE("/multisigs/:multisig_address/spends/:spend_address", deleteSpend)
+
+		// Transactions
+		v1.GET("/multisigs/:multisig_address/transactions", listTransactions)
+		v1.GET("/multisigs/:multisig_address/transactions/:indexNumber", getTransaction)
+		v1.POST("/multisigs/:multisig_address/transactions", createTransaction)
+		v1.PUT("/multisigs/:multisig_address/transactions/:indexNumber", updateTransaction)
+		v1.DELETE("/multisigs/:multisig_address/transactions/:indexNumber", deleteTransaction)
 	}
 
 	r.Run(":8090")
