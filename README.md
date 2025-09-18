@@ -134,9 +134,9 @@ squads-rest-api/
 | 资源 | 端点 | 描述 |
 |------|------|------|
 | 🔐 **Multisigs** | `/multisigs` | 多签钱包管理 |
-| 🏦 **Vaults** | `/multisigs/{id}/vaults` | 金库管理 |
-| 👥 **Members** | `/multisigs/{id}/members` | 成员管理 |
-| 💰 **Spends** | `/multisigs/{id}/spends` | 支出记录 |
+| 🏦 **Vaults** | `/multisigs/{multisig_address}/vaults` | 金库管理 |
+| 👥 **Members** | `/multisigs/{multisig_address}/members` | 成员管理 |
+| 💰 **Spends** | `/multisigs/{multisig_address}/spends` | 支出记录 |
 
 ---
 
