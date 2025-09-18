@@ -768,6 +768,9 @@ const docTemplate = `{
                 "id": {
                     "type": "integer"
                 },
+                "logo": {
+                    "type": "string"
+                },
                 "multisig_address": {
                     "type": "string"
                 },

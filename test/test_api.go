@@ -10,7 +10,11 @@ import (
 	"os"
 )
 
-
+type Response struct {
+	Success bool        `json:"success"`
+	Message string      `json:"message,omitempty"`
+	Data    interface{} `json:"data,omitempty"`
+}
 
 type StepResult struct {
 	Step     string
@@ -71,6 +75,7 @@ func testAPI() {
 		"multisig_address": "multisig_test_1",
 		"name":             "Test Multisig",
 		"description":      "testing multisig",
+		"logo":             "https://example.com/test-logo.png",
 	}
 	resp := httpRequest("POST", baseURL+"/multisigs", m1)
 	printStep(step, resp, "POST", baseURL+"/multisigs")
@@ -186,4 +191,8 @@ func generateReport() {
 
 	os.WriteFile("report.html", []byte(html), 0644)
 	fmt.Println("✅ Report saved to report.html")
+}
+
+func main() {
+	testAPI()
 }

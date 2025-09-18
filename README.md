@@ -150,7 +150,8 @@ curl -X POST http://localhost:8090/multisigs \
   -d '{
     "multisig_address": "0xabc123",
     "name": "Squad A",
-    "description": "First squad"
+    "description": "First squad",
+    "logo": "https://example.com/squad-a-logo.png"
   }'
 ```
 
@@ -164,6 +165,7 @@ curl -X POST http://localhost:8090/multisigs \
     "multisig_address": "0xabc123",
     "name": "Squad A",
     "description": "First squad",
+    "logo": "https://example.com/squad-a-logo.png",
     "created_at": "2024-01-15T10:30:00Z",
     "updated_at": "2024-01-15T10:30:00Z"
   }
@@ -187,6 +189,7 @@ curl "http://localhost:8090/multisigs?page=1&limit=10&search=Squad"
         "multisig_address": "0xabc123",
         "name": "Squad A",
         "description": "First squad",
+        "logo": "https://example.com/squad-a-logo.png",
         "created_at": "2024-01-15T10:30:00Z",
         "updated_at": "2024-01-15T10:30:00Z"
       }
@@ -216,6 +219,7 @@ curl "http://localhost:8090/multisigs/0xabc123"
     "multisig_address": "0xabc123",
     "name": "Squad A",
     "description": "First squad",
+    "logo": "https://example.com/squad-a-logo.png",
     "created_at": "2024-01-15T10:30:00Z",
     "updated_at": "2024-01-15T10:30:00Z"
   }
@@ -228,7 +232,8 @@ curl -X PUT http://localhost:8090/multisigs/0xabc123 \
   -H "Content-Type: application/json" \
   -d '{
     "name": "Squad A Updated",
-    "description": "Updated description"
+    "description": "Updated description",
+    "logo": "https://example.com/squad-a-updated-logo.png"
   }'
 ```
 
@@ -242,6 +247,7 @@ curl -X PUT http://localhost:8090/multisigs/0xabc123 \
     "multisig_address": "0xabc123",
     "name": "Squad A Updated",
     "description": "Updated description",
+    "logo": "https://example.com/squad-a-updated-logo.png",
     "created_at": "2024-01-15T10:30:00Z",
     "updated_at": "2024-01-15T11:45:00Z"
   }

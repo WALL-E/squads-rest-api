@@ -75,6 +75,7 @@ func main() {
 		"multisig_address": "multisig_test_1",
 		"name":             "Test Multisig",
 		"description":      "testing multisig",
+		"logo":             "https://example.com/logo1.png",
 	}
 	resp := httpRequest("POST", baseURL+"/multisigs", m1)
 	printStep(step, resp, "POST", baseURL+"/multisigs")
@@ -135,6 +136,16 @@ func main() {
 	step = "Step 6: Get Multisig"
 	resp = httpRequest("GET", fmt.Sprintf("%s/multisigs/%s", baseURL, multisigID), nil)
 	printStep(step, resp, "GET", fmt.Sprintf("%s/multisigs/%s", baseURL, multisigID))
+
+	// Step 6.5: Update Multisig
+	step = "Step 6.5: Update Multisig"
+	m1Update := map[string]interface{}{
+		"name":        "Updated Test Multisig",
+		"description": "updated testing multisig",
+		"logo":        "https://example.com/updated-logo.png",
+	}
+	resp = httpRequest("PUT", fmt.Sprintf("%s/multisigs/%s", baseURL, multisigID), m1Update)
+	printStep(step, resp, "PUT", fmt.Sprintf("%s/multisigs/%s", baseURL, multisigID))
 
 	// Step 7: List Vaults
 	step = "Step 7: List Vaults"

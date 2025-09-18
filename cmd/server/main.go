@@ -22,6 +22,7 @@ type Multisig struct {
 	MultisigAddress string    `gorm:"type:varchar(255);uniqueIndex;not null" json:"multisig_address"`
 	Name            string    `json:"name"`
 	Description     string    `json:"description"`
+	Logo            string    `json:"logo"`
 	CreatedAt       time.Time `gorm:"autoCreateTime" json:"created_at"`
 	UpdatedAt       time.Time `gorm:"autoUpdateTime" json:"updated_at"`
 }
@@ -221,6 +222,7 @@ func updateMultisig(c *gin.Context) {
 	}
 	ms.Name = input.Name
 	ms.Description = input.Description
+	ms.Logo = input.Logo
 	if err := db.Save(&ms).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, Response{Success: false, Message: err.Error()})
 		return
