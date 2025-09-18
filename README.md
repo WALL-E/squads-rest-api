@@ -85,12 +85,12 @@ make setup
 make run
 ```
 
-🎉 **服务启动成功！** 访问 http://localhost:8080
+🎉 **服务启动成功！** 访问 http://localhost:8090
 
 ### 🔍 健康检查
 
 ```bash
-curl -s http://localhost:8080/health | jq
+curl -s http://localhost:8090/health | jq
 ```
 
 **响应示例：**
@@ -124,10 +124,10 @@ squads-rest-api/
 
 ### 🌐 基础信息
 
-- **Base URL:** `http://localhost:8080`
+- **Base URL:** `http://localhost:8090`
 - **Content-Type:** `application/json`
 - **响应格式:** JSON
-- **Swagger 文档:** [http://localhost:8080/swagger/index.html](http://localhost:8080/swagger/index.html)
+- **Swagger 文档:** [http://localhost:8090/swagger/index.html](http://localhost:8090/swagger/index.html)
 
 ### 📋 API 概览
 
@@ -145,7 +145,7 @@ squads-rest-api/
 
 #### 创建多签钱包
 ```bash
-curl -X POST http://localhost:8080/multisigs \
+curl -X POST http://localhost:8090/multisigs \
   -H "Content-Type: application/json" \
   -d '{
     "multisig_address": "0xabc123",
@@ -154,19 +154,77 @@ curl -X POST http://localhost:8080/multisigs \
   }'
 ```
 
+**响应示例：**
+```json
+{
+  "success": true,
+  "message": "Multisig created successfully",
+  "data": {
+    "id": 1,
+    "multisig_address": "0xabc123",
+    "name": "Squad A",
+    "description": "First squad",
+    "created_at": "2024-01-15T10:30:00Z",
+    "updated_at": "2024-01-15T10:30:00Z"
+  }
+}
+```
+
 #### 查询多签钱包列表
 ```bash
-curl "http://localhost:8080/multisigs?page=1&limit=10&search=Squad"
+curl "http://localhost:8090/multisigs?page=1&limit=10&search=Squad"
+```
+
+**响应示例：**
+```json
+{
+  "success": true,
+  "message": "Multisigs retrieved successfully",
+  "data": {
+    "items": [
+      {
+        "id": 1,
+        "multisig_address": "0xabc123",
+        "name": "Squad A",
+        "description": "First squad",
+        "created_at": "2024-01-15T10:30:00Z",
+        "updated_at": "2024-01-15T10:30:00Z"
+      }
+    ],
+    "pagination": {
+      "page": 1,
+      "limit": 10,
+      "total": 1,
+      "total_pages": 1
+    }
+  }
+}
 ```
 
 #### 查询单个多签钱包
 ```bash
-curl "http://localhost:8080/multisigs/0xabc123"
+curl "http://localhost:8090/multisigs/0xabc123"
+```
+
+**响应示例：**
+```json
+{
+  "success": true,
+  "message": "Multisig retrieved successfully",
+  "data": {
+    "id": 1,
+    "multisig_address": "0xabc123",
+    "name": "Squad A",
+    "description": "First squad",
+    "created_at": "2024-01-15T10:30:00Z",
+    "updated_at": "2024-01-15T10:30:00Z"
+  }
+}
 ```
 
 #### 更新多签钱包
 ```bash
-curl -X PUT http://localhost:8080/multisigs/0xabc123 \
+curl -X PUT http://localhost:8090/multisigs/0xabc123 \
   -H "Content-Type: application/json" \
   -d '{
     "name": "Squad A Updated",
@@ -174,9 +232,33 @@ curl -X PUT http://localhost:8080/multisigs/0xabc123 \
   }'
 ```
 
+**响应示例：**
+```json
+{
+  "success": true,
+  "message": "Multisig updated successfully",
+  "data": {
+    "id": 1,
+    "multisig_address": "0xabc123",
+    "name": "Squad A Updated",
+    "description": "Updated description",
+    "created_at": "2024-01-15T10:30:00Z",
+    "updated_at": "2024-01-15T11:45:00Z"
+  }
+}
+```
+
 #### 删除多签钱包
 ```bash
-curl -X DELETE http://localhost:8080/multisigs/0xabc123
+curl -X DELETE http://localhost:8090/multisigs/0xabc123
+```
+
+**响应示例：**
+```json
+{
+  "success": true,
+  "message": "Multisig deleted successfully"
+}
 ```
 
 </details>
@@ -186,7 +268,7 @@ curl -X DELETE http://localhost:8080/multisigs/0xabc123
 
 #### 创建支出记录
 ```bash
-curl -X POST http://localhost:8080/multisigs/0xabc123/spends \
+curl -X POST http://localhost:8090/multisigs/0xabc123/spends \
   -H "Content-Type: application/json" \
   -d '{
     "spend_address": "0xspend1",
@@ -197,17 +279,17 @@ curl -X POST http://localhost:8080/multisigs/0xabc123/spends \
 
 #### 查询支出列表
 ```bash
-curl "http://localhost:8080/multisigs/0xabc123/spends?page=1&limit=10"
+curl "http://localhost:8090/multisigs/0xabc123/spends?page=1&limit=10"
 ```
 
 #### 查询单个支出
 ```bash
-curl "http://localhost:8080/multisigs/0xabc123/spends/0xspend1"
+curl "http://localhost:8090/multisigs/0xabc123/spends/0xspend1"
 ```
 
 #### 更新支出记录
 ```bash
-curl -X PUT http://localhost:8080/multisigs/0xabc123/spends/0xspend1 \
+curl -X PUT http://localhost:8090/multisigs/0xabc123/spends/0xspend1 \
   -H "Content-Type: application/json" \
   -d '{
     "description": "Updated payment description"
@@ -216,7 +298,7 @@ curl -X PUT http://localhost:8080/multisigs/0xabc123/spends/0xspend1 \
 
 #### 删除支出记录
 ```bash
-curl -X DELETE http://localhost:8080/multisigs/0xabc123/spends/0xspend1
+curl -X DELETE http://localhost:8090/multisigs/0xabc123/spends/0xspend1
 ```
 
 </details>
@@ -226,7 +308,7 @@ curl -X DELETE http://localhost:8080/multisigs/0xabc123/spends/0xspend1
 
 #### 创建金库
 ```bash
-curl -X POST http://localhost:8080/multisigs/0xabc123/vaults \
+curl -X POST http://localhost:8090/multisigs/0xabc123/vaults \
   -H "Content-Type: application/json" \
   -d '{
     "vault_address": "0xvault1",
@@ -237,17 +319,17 @@ curl -X POST http://localhost:8080/multisigs/0xabc123/vaults \
 
 #### 查询金库列表
 ```bash
-curl "http://localhost:8080/multisigs/0xabc123/vaults?page=1&limit=10"
+curl "http://localhost:8090/multisigs/0xabc123/vaults?page=1&limit=10"
 ```
 
 #### 查询单个金库
 ```bash
-curl "http://localhost:8080/multisigs/0xabc123/vaults/0xvault1"
+curl "http://localhost:8090/multisigs/0xabc123/vaults/0xvault1"
 ```
 
 #### 更新金库
 ```bash
-curl -X PUT http://localhost:8080/multisigs/0xabc123/vaults/0xvault1 \
+curl -X PUT http://localhost:8090/multisigs/0xabc123/vaults/0xvault1 \
   -H "Content-Type: application/json" \
   -d '{
     "name": "Updated Vault Name",
@@ -257,7 +339,7 @@ curl -X PUT http://localhost:8080/multisigs/0xabc123/vaults/0xvault1 \
 
 #### 删除金库
 ```bash
-curl -X DELETE http://localhost:8080/multisigs/0xabc123/vaults/0xvault1
+curl -X DELETE http://localhost:8090/multisigs/0xabc123/vaults/0xvault1
 ```
 
 </details>
@@ -267,38 +349,38 @@ curl -X DELETE http://localhost:8080/multisigs/0xabc123/vaults/0xvault1
 
 #### 添加成员
 ```bash
-curl -X POST http://localhost:8080/multisigs/0xabc123/members \
+curl -X POST http://localhost:8090/multisigs/0xabc123/members \
   -H "Content-Type: application/json" \
   -d '{
     "member_address": "0xmember1",
-    "role": "admin",
-    "permissions": ["read", "write", "execute"]
+    "name": "Member Name",
+    "description": "Member description"
   }'
 ```
 
 #### 查询成员列表
 ```bash
-curl "http://localhost:8080/multisigs/0xabc123/members?page=1&limit=10"
+curl "http://localhost:8090/multisigs/0xabc123/members?page=1&limit=10"
 ```
 
 #### 查询单个成员
 ```bash
-curl "http://localhost:8080/multisigs/0xabc123/members/0xmember1"
+curl "http://localhost:8090/multisigs/0xabc123/members/0xmember1"
 ```
 
 #### 更新成员信息
 ```bash
-curl -X PUT http://localhost:8080/multisigs/0xabc123/members/0xmember1 \
+curl -X PUT http://localhost:8090/multisigs/0xabc123/members/0xmember1 \
   -H "Content-Type: application/json" \
   -d '{
-    "role": "member",
-    "permissions": ["read"]
+    "name": "Member Name",
+    "description": "Member description"
   }'
 ```
 
 #### 移除成员
 ```bash
-curl -X DELETE http://localhost:8080/multisigs/0xabc123/members/0xmember1
+curl -X DELETE http://localhost:8090/multisigs/0xabc123/members/0xmember1
 ```
 
 </details>
@@ -346,7 +428,7 @@ curl -X DELETE http://localhost:8080/multisigs/0xabc123/members/0xmember1
 make test
 
 # 手动测试健康检查
-curl http://localhost:8080/health
+curl http://localhost:8090/health
 ```
 
 ## 🚀 部署
@@ -374,7 +456,7 @@ FROM alpine:latest
 RUN apk --no-cache add ca-certificates
 WORKDIR /root/
 COPY --from=builder /app/server .
-EXPOSE 8080
+EXPOSE 8090
 CMD ["./server"]
 ```
 
