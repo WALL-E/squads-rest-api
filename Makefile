@@ -1,5 +1,5 @@
 APP_NAME=squads-rest-api
-SERVER_BIN=server
+SERVER_BIN=squads-rest-api
 TEST_BIN=test-api
 SETUP_BIN=setup-db
 
