@@ -30,6 +30,7 @@ type HealthResponse struct {
 	BuildTime string `json:"build_time"`
 	GitCommit string `json:"git_commit"`
 	Version   string `json:"version"`
+	BinName   string `json:"bin_name"`
 }
 
 // ---------- Models ----------
@@ -757,6 +758,7 @@ func healthCheck(c *gin.Context) {
 		BuildTime: BuildTime,
 		GitCommit: GitCommit,
 		Version:   Version,
+		BinName:   "squads-rest-api",
 	})
 }
 

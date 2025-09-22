@@ -9,6 +9,8 @@ definitions:
     type: object
   main.HealthResponse:
     properties:
+      bin_name:
+        type: string
       build_time:
         type: string
       git_commit:

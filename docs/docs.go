@@ -972,6 +972,9 @@ const docTemplate = `{
         "main.HealthResponse": {
             "type": "object",
             "properties": {
+                "bin_name": {
+                    "type": "string"
+                },
                 "build_time": {
                     "type": "string"
                 },

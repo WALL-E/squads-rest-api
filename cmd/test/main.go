@@ -16,6 +16,15 @@ type Response struct {
 	Data    interface{} `json:"data,omitempty"`
 }
 
+type HealthResponse struct {
+	Success   bool   `json:"success"`
+	Message   string `json:"message"`
+	BuildTime string `json:"build_time"`
+	GitCommit string `json:"git_commit"`
+	Version   string `json:"version"`
+	BinName   string `json:"bin_name"`
+}
+
 type StepResult struct {
 	Step     string
 	Method   string
@@ -68,13 +77,55 @@ func printStep(step string, resp Response, method, url string) {
 	})
 }
 
+func healthCheck() bool {
+	req, _ := http.NewRequest("GET", baseURL+"/health", nil)
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		fmt.Printf("Health check failed: %v\n", err)
+		return false
+	}
+	defer resp.Body.Close()
+
+	respBytes, _ := io.ReadAll(resp.Body)
+	var healthResp HealthResponse
+	if err := json.Unmarshal(respBytes, &healthResp); err != nil {
+		fmt.Printf("Failed to parse health response: %v\n", err)
+		return false
+	}
+
+	fmt.Printf("Health Check Response:\n")
+	fmt.Printf("  Success: %v\n", healthResp.Success)
+	fmt.Printf("  Message: %s\n", healthResp.Message)
+	fmt.Printf("  Build Time: %s\n", healthResp.BuildTime)
+	fmt.Printf("  Git Commit: %s\n", healthResp.GitCommit)
+	fmt.Printf("  Version: %s\n", healthResp.Version)
+	fmt.Printf("  Bin Name: %s\n", healthResp.BinName)
+
+	// Validate bin_name field
+	if healthResp.BinName == "" {
+		fmt.Printf("❌ FAIL: bin_name field is empty\n")
+		return false
+	}
+	if healthResp.BinName != "squads-rest-api" {
+		fmt.Printf("❌ FAIL: bin_name field expected 'squads-rest-api', got '%s'\n", healthResp.BinName)
+		return false
+	}
+	
+	fmt.Printf("✅ PASS: bin_name field validation successful\n")
+	return healthResp.Success
+}
+
 func main() {
+	var resp Response
+	
 	// Step 0: Health Check
 	step := "Step 0: Health Check"
-	resp := httpRequest("GET", baseURL+"/health", nil)
-	printStep(step, resp, "GET", baseURL+"/health")
-	if !resp.Success {
+	fmt.Printf("\n=== %s ===\n", step)
+	if !healthCheck() {
 		fmt.Println("⚠️ Warning: Health check failed, but continuing with tests...")
+	} else {
+		fmt.Println("✅ Health check passed")
 	}
 
 	// Step 1: Create Multisig
