@@ -49,7 +49,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/main.HealthResponse"
+                            "$ref": "#/definitions/cmd_server.HealthResponse"
                         }
                     }
                 }
@@ -257,7 +257,7 @@ const docTemplate = `{
                 }
             },
             "post": {
-                "description": "Create a new member under a multisig",
+                "description": "Create a new member under a multisig. If member already exists, returns success with duplicate message.",
                 "tags": [
                     "Members"
                 ],
@@ -281,8 +281,14 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
+                    "200": {
+                        "description": "Member already exists",
+                        "schema": {
+                            "$ref": "#/definitions/cmd_server.Response"
+                        }
+                    },
                     "201": {
-                        "description": "Created",
+                        "description": "Member created successfully",
                         "schema": {
                             "$ref": "#/definitions/cmd_server.Response"
                         }
@@ -957,19 +963,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "cmd_server.Response": {
-            "type": "object",
-            "properties": {
-                "data": {},
-                "message": {
-                    "type": "string"
-                },
-                "success": {
-                    "type": "boolean"
-                }
-            }
-        },
-        "main.HealthResponse": {
+        "cmd_server.HealthResponse": {
             "type": "object",
             "properties": {
                 "bin_name": {
@@ -989,6 +983,18 @@ const docTemplate = `{
                 },
                 "version": {
                     "type": "string"
+                }
+            }
+        },
+        "cmd_server.Response": {
+            "type": "object",
+            "properties": {
+                "data": {},
+                "message": {
+                    "type": "string"
+                },
+                "success": {
+                    "type": "boolean"
                 }
             }
         },

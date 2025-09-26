@@ -25,6 +25,7 @@
 - [开发指南](#-开发指南)
 - [部署](#-部署)
 - [贡献指南](#-贡献指南)
+- [更新日志](#-更新日志)
 - [许可证](#-许可证)
 
 ## ✨ 功能特性
@@ -40,6 +41,7 @@
 - **分页查询** - 高效的大数据集处理
 - **搜索过滤** - 灵活的数据检索能力
 - **排序支持** - 多字段排序功能
+- **重复数据处理** - 智能处理重复数据，避免错误返回
 - **健康检查** - 服务状态监控，包含构建时间和版本信息
 - **版本管理** - 自动注入构建时间、Git 提交和版本信息
 - **Swagger 文档** - 完整的 API 文档
@@ -413,6 +415,45 @@ curl -X POST http://localhost:8090/multisigs/0xabc123/members \
   }'
 ```
 
+**成功响应（新成员）：**
+```json
+{
+  "success": true,
+  "data": {
+    "id": 1,
+    "member_address": "0xmember1",
+    "multisig_address": "0xabc123",
+    "name": "Member Name",
+    "description": "Member description",
+    "created_at": "2024-01-15T10:30:00Z",
+    "updated_at": "2024-01-15T10:30:00Z"
+  }
+}
+```
+
+**成功响应（成员已存在）：**
+```json
+{
+  "success": true,
+  "message": "Member already exists",
+  "data": {
+    "id": 1,
+    "member_address": "0xmember1",
+    "multisig_address": "0xabc123",
+    "name": "Member Name",
+    "description": "Member description",
+    "created_at": "2024-01-15T10:30:00Z",
+    "updated_at": "2024-01-15T10:30:00Z"
+  }
+}
+```
+
+**重复数据处理说明：**
+- 当尝试添加已存在的成员时（相同的 `member_address` 和 `multisig_address` 组合），接口会返回成功状态
+- HTTP 状态码：201（新创建）或 200（已存在）
+- 通过 `message` 字段区分：空值表示新创建，"Member already exists" 表示已存在
+- 这种设计避免了重复数据错误，提供更好的用户体验
+
 #### 查询成员列表
 ```bash
 curl "http://localhost:8090/multisigs/0xabc123/members?page=1&limit=10"
@@ -679,6 +720,28 @@ CMD ["./server"]
 - 期望行为
 - 实际行为
 - 环境信息
+
+## 📝 更新日志
+
+### 🆕 最新更新
+
+#### v1.1.0 - 重复数据处理优化
+- **✨ 新增功能**：智能重复数据处理机制
+- **🔧 优化**：POST `/multisigs/{multisig_address}/members` 接口现在能优雅处理重复成员
+- **📋 行为变更**：
+  - 添加已存在成员时返回成功状态（HTTP 200）而非错误
+  - 通过 `message` 字段标识："Member already exists"
+  - 保持数据一致性，避免数据库约束错误
+- **🧪 测试**：新增重复数据处理测试用例
+- **📚 文档**：更新 API 文档和 Swagger 规范
+
+#### v1.0.0 - 基础版本
+- **🎉 首次发布**：完整的多签钱包管理 REST API
+- **🔐 核心功能**：Multisig、Vault、Member、Spend、Transaction 管理
+- **🛠 技术特性**：分页、搜索、排序、健康检查
+- **📚 文档**：完整的 API 文档和 Swagger 支持
+
+---
 
 ## 📄 许可证
 

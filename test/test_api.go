@@ -174,6 +174,19 @@ func testAPI() {
 		memberAddress = mem1["member_address"].(string)
 	}
 
+	// Step 3.5: Test Duplicate Member (should return success with message)
+	step = "Step 3.5: Test Duplicate Member"
+	fmt.Printf("\n=== %s ===\n", step)
+	resp = httpRequest("POST", fmt.Sprintf("%s/multisigs/%s/members", baseURL, multisigID), mem1)
+	printStep(step, resp, "POST", fmt.Sprintf("%s/multisigs/%s/members", baseURL, multisigID))
+	if resp.Success && resp.Message == "Member already exists" {
+		fmt.Println("✅ Duplicate member handling works correctly")
+	} else if resp.Success && resp.Message != "Member already exists" {
+		fmt.Printf("⚠️  Member creation succeeded but message is unexpected: %s\n", resp.Message)
+	} else {
+		fmt.Printf("❌ Duplicate member test failed: %+v\n", resp)
+	}
+
 	// Step 4: Create Spend
 	step = "Step 4: Create Spend"
 	sp1 := map[string]interface{}{

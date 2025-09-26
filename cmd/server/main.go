@@ -447,11 +447,12 @@ func getMember(c *gin.Context) {
 }
 
 // @Summary Create Member
-// @Description Create a new member under a multisig
+// @Description Create a new member under a multisig. If member already exists, returns success with duplicate message.
 // @Tags Members
 // @Param multisig_address path string true "Multisig Address"
 // @Param body body Member true "Member object"
-// @Success 201 {object} Response
+// @Success 201 {object} Response "Member created successfully"
+// @Success 200 {object} Response "Member already exists"
 // @Router /multisigs/{multisig_address}/members [post]
 func createMember(c *gin.Context) {
 	addr := c.Param("multisig_address")
@@ -461,6 +462,17 @@ func createMember(c *gin.Context) {
 		return
 	}
 	item.MultisigAddress = addr
+	
+	// Check if member already exists
+	var existingMember Member
+	err := db.Where("multisig_address = ? AND member_address = ?", addr, item.MemberAddress).First(&existingMember).Error
+	if err == nil {
+		// Member already exists, return success with duplicate message
+		c.JSON(http.StatusOK, Response{Success: true, Message: "Member already exists", Data: existingMember})
+		return
+	}
+	
+	// Create new member
 	if err := db.Create(&item).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, Response{Success: false, Message: err.Error()})
 		return

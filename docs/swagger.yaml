@@ -1,13 +1,5 @@
 definitions:
-  cmd_server.Response:
-    properties:
-      data: {}
-      message:
-        type: string
-      success:
-        type: boolean
-    type: object
-  main.HealthResponse:
+  cmd_server.HealthResponse:
     properties:
       bin_name:
         type: string
@@ -21,6 +13,14 @@ definitions:
         type: boolean
       version:
         type: string
+    type: object
+  cmd_server.Response:
+    properties:
+      data: {}
+      message:
+        type: string
+      success:
+        type: boolean
     type: object
   main.Member:
     properties:
@@ -130,7 +130,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/main.HealthResponse'
+            $ref: '#/definitions/cmd_server.HealthResponse'
       summary: Health Check
       tags:
       - Health
@@ -268,7 +268,8 @@ paths:
       tags:
       - Members
     post:
-      description: Create a new member under a multisig
+      description: Create a new member under a multisig. If member already exists,
+        returns success with duplicate message.
       parameters:
       - description: Multisig Address
         in: path
@@ -282,8 +283,12 @@ paths:
         schema:
           $ref: '#/definitions/main.Member'
       responses:
+        "200":
+          description: Member already exists
+          schema:
+            $ref: '#/definitions/cmd_server.Response'
         "201":
-          description: Created
+          description: Member created successfully
           schema:
             $ref: '#/definitions/cmd_server.Response'
       summary: Create Member
