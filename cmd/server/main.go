@@ -189,17 +189,23 @@ func listMultisigs(c *gin.Context) {
 	// 从请求头读取 X-User-Address，如果存在则按成员地址过滤多签
 	userAddr := strings.TrimSpace(c.GetHeader("X-User-Address"))
 	var tx *gorm.DB
+	var searchable []string
+	var sortable []string
 	if userAddr != "" {
-		// 使用数据库前缀进行联合查询：rwa.multisigs 与 rwa.members
-		tx = db.Table("rwa.multisigs").
-			Joins("JOIN rwa.members ON rwa.members.multisig_address = rwa.multisigs.multisig_address").
-			Where("rwa.members.member_address = ?", userAddr).
-			Select("rwa.multisigs.*")
+		// 使用数据库前缀与表别名进行联合查询：rwa.multisigs(ms) 与 rwa.members(m)
+		tx = db.Table("rwa.multisigs AS ms").
+			Joins("JOIN rwa.members AS m ON m.multisig_address = ms.multisig_address").
+			Where("m.member_address = ?", userAddr).
+			Select("ms.*")
+		searchable = []string{"ms.name", "ms.description"}
+		sortable = []string{"ms.id", "ms.name", "ms.created_at", "ms.updated_at"}
 	} else {
 		tx = db.Model(&Multisig{})
+		searchable = []string{"name", "description"}
+		sortable = []string{"id", "name", "created_at", "updated_at"}
 	}
 	// 继续应用通用查询（搜索与排序）
-	tx = applyQuery(c, tx, []string{"name", "description"}, []string{"id", "name", "created_at", "updated_at"})
+	tx = applyQuery(c, tx, searchable, sortable)
 	result, err := paginate(c, tx, &items)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, Response{Success: false, Message: err.Error()})
@@ -475,7 +481,7 @@ func createMember(c *gin.Context) {
 		return
 	}
 	item.MultisigAddress = addr
-	
+
 	// Check if member already exists
 	var existingMember Member
 	err := db.Where("multisig_address = ? AND member_address = ?", addr, item.MemberAddress).First(&existingMember).Error
@@ -484,7 +490,7 @@ func createMember(c *gin.Context) {
 		c.JSON(http.StatusOK, Response{Success: true, Message: "Member already exists", Data: existingMember})
 		return
 	}
-	
+
 	// Create new member
 	if err := db.Create(&item).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, Response{Success: false, Message: err.Error()})
