@@ -192,13 +192,13 @@ func listMultisigs(c *gin.Context) {
 	var searchable []string
 	var sortable []string
 	if userAddr != "" {
-		// 使用数据库前缀与表别名进行联合查询：rwa.multisigs(ms) 与 rwa.members(m)
-		tx = db.Table("rwa.multisigs AS ms").
-			Joins("JOIN rwa.members AS m ON m.multisig_address = ms.multisig_address").
-			Where("m.member_address = ?", userAddr).
-			Select("ms.*")
-		searchable = []string{"ms.name", "ms.description"}
-		sortable = []string{"ms.id", "ms.name", "ms.created_at", "ms.updated_at"}
+		// 使用 Model(&Multisig{}) 并 JOIN 成员表，通过成员地址过滤，返回结构保持为 Multisig
+		tx = db.Model(&Multisig{}).
+			Joins("JOIN members AS m ON m.multisig_address = multisigs.multisig_address").
+			Where("m.member_address = ?", userAddr)
+		// 为避免列名歧义，搜索与排序字段添加表前缀
+		searchable = []string{"multisigs.name", "multisigs.description"}
+		sortable = []string{"multisigs.id", "multisigs.name", "multisigs.created_at", "multisigs.updated_at"}
 	} else {
 		tx = db.Model(&Multisig{})
 		searchable = []string{"name", "description"}
