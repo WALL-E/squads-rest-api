@@ -186,7 +186,20 @@ func applyQuery(c *gin.Context, tx *gorm.DB, searchableFields []string, sortable
 // @Router /multisigs [get]
 func listMultisigs(c *gin.Context) {
 	var items []Multisig
-	tx := applyQuery(c, db.Model(&Multisig{}), []string{"name", "description"}, []string{"id", "name", "created_at", "updated_at"})
+	// 从请求头读取 X-User-Address，如果存在则按成员地址过滤多签
+	userAddr := strings.TrimSpace(c.GetHeader("X-User-Address"))
+	var tx *gorm.DB
+	if userAddr != "" {
+		// 使用数据库前缀进行联合查询：rwa.multisigs 与 rwa.members
+		tx = db.Table("rwa.multisigs").
+			Joins("JOIN rwa.members ON rwa.members.multisig_address = rwa.multisigs.multisig_address").
+			Where("rwa.members.member_address = ?", userAddr).
+			Select("rwa.multisigs.*")
+	} else {
+		tx = db.Model(&Multisig{})
+	}
+	// 继续应用通用查询（搜索与排序）
+	tx = applyQuery(c, tx, []string{"name", "description"}, []string{"id", "name", "created_at", "updated_at"})
 	result, err := paginate(c, tx, &items)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, Response{Success: false, Message: err.Error()})
